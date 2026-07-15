@@ -19,13 +19,13 @@ import {
   Wrench,
 } from "lucide-react";
 
-import Reveal from "../components/Reveal";
 import PageHero from "../components/PageHero";
+import Reveal from "../components/Reveal";
 
 export const metadata: Metadata = {
   title: "Nos services",
   description:
-    "Inspection, maintenance, soudure, nettoyage et travaux hydrauliques sous-marins.",
+    "Inspection, maintenance, soudure, nettoyage, travaux portuaires, hydrauliques et sous-marins en Algérie.",
 };
 
 const services = [
@@ -35,14 +35,19 @@ const services = [
     title: "Inspections sous-marines",
     shortTitle: "Inspection",
     description:
-      "Contrôle visuel, photographique et technique des ouvrages, équipements et installations immergés.",
+      "Contrôle visuel, photographique et technique des ouvrages, équipements, navires et installations immergés.",
     image: "/images/6.jpg",
     items: [
-      "Installations hydro-techniques",
-      "Ports, bassins et ouvrages maritimes",
-      "Galeries et conduites immergées",
-      "Carènes, hélices et navires",
-      "Captures photo et vidéo",
+      "Inspection des installations hydro-techniques",
+      "Inspection des balises de signalisation maritime",
+      "Inspection des ports, bassins et ouvrages immergés",
+      "Inspection des galeries et conduites d’eau de mer",
+      "Inspection des carènes, hélices et gouvernails",
+      "Contrôle de la protection cathodique",
+      "Inspection des prises d’eau de mer",
+      "Inspection à sec de tous types de navires",
+      "Captures photographiques et vidéos",
+      "Sondage et relevé bathymétrique",
       "Relevés et rapports techniques",
     ],
   },
@@ -52,15 +57,18 @@ const services = [
     title: "Nettoyage et maintenance",
     shortTitle: "Maintenance",
     description:
-      "Entretien préventif et curatif des ouvrages immergés et des circuits hydrauliques.",
+      "Entretien préventif et curatif des ouvrages immergés, structures maritimes et circuits hydrauliques.",
     image: "/images/18.jpg",
     items: [
-      "Nettoyage et dévasement",
-      "Entretien des ouvrages immergés",
+      "Nettoyage et dévasement sous-marin",
+      "Nettoyage des ouvrages immergés",
       "Nettoyage des galeries noyées",
-      "Entretien des pomperies",
-      "Grattage des structures",
-      "Maintenance préventive",
+      "Entretien des bassins et pomperies",
+      "Nettoyage des canaux et conduites",
+      "Entretien des systèmes d’amenée d’eau de mer",
+      "Travaux sous-marins sur navires",
+      "Grattage des structures immergées",
+      "Maintenance préventive et corrective",
     ],
   },
   {
@@ -69,32 +77,36 @@ const services = [
     title: "Entretien portuaire",
     shortTitle: "Portuaire",
     description:
-      "Interventions spécialisées sur les infrastructures portuaires, les quais et les équipements maritimes.",
+      "Interventions spécialisées sur les infrastructures portuaires, les quais, les plateformes et les équipements maritimes.",
     image: "/images/12.jpg",
     items: [
       "Balisage maritime",
-      "Pose de blocs",
-      "Entretien des quais",
-      "Colmatage des cavités",
-      "Protection cathodique",
-      "Installation de défenses",
+      "Remorquage de plateformes",
+      "Tirage et déplacement de plateformes",
+      "Entretien et colmatage des cavités",
+      "Pose de blocs de protection",
+      "Suivi de l’état de la protection cathodique",
+      "Entretien des quais et infrastructures portuaires",
+      "Installation et entretien des défenses",
     ],
   },
   {
     number: "04",
     icon: HardHat,
-    title: "Soudure et découpage",
+    title: "Soudure et découpage sous-marins",
     shortTitle: "Construction",
     description:
-      "Construction, assemblage et réparation de structures métalliques en environnement immergé.",
+      "Construction, assemblage, réparation et découpage de structures métalliques en environnement immergé.",
     image: "/images/9.jpg",
     items: [
       "Soudure sous-marine",
-      "Découpage métallique",
+      "Découpage métallique sous-marin",
       "Chemisage des pieux",
-      "Pose d’anodes",
-      "Assemblage de structures",
-      "Réparation de pieux",
+      "Réparation des pieux",
+      "Pose d’anodes par soudure ou fixation",
+      "Assemblage de structures métalliques",
+      "Réparation de structures immergées",
+      "Travaux de fixation sous-marine",
     ],
   },
   {
@@ -103,32 +115,38 @@ const services = [
     title: "Travaux hydrauliques",
     shortTitle: "Hydraulique",
     description:
-      "Pose, maintenance et réparation de conduites et de réseaux hydrauliques complexes.",
+      "Pose, maintenance et réparation de conduites et de réseaux hydrauliques de différents diamètres.",
     image: "/images/15.jpg",
     items: [
-      "Pose de conduites",
-      "Conduites offshore",
+      "Pose de conduites de différents diamètres",
+      "Installation de conduites offshore",
+      "Installation de conduites PEHD",
       "Réparation des prises d’eau",
       "Réparation des canaux",
-      "Installation de conduites PEHD",
-      "Maintenance des réseaux",
+      "Réparation des conduites de chlore",
+      "Réparation des conduites d’air",
+      "Maintenance des réseaux hydrauliques",
+      "Contrôle des conduites immergées",
     ],
   },
   {
     number: "06",
     icon: Construction,
-    title: "Assistance technique",
+    title: "Assistance technique et travaux divers",
     shortTitle: "Assistance",
     description:
-      "Mise à disposition de moyens humains et techniques pour les opérations maritimes particulières.",
+      "Mise à disposition de moyens humains, matériels et techniques pour les opérations maritimes particulières.",
     image: "/images/3.jpg",
     items: [
-      "Inspection des navires",
-      "Renflouage",
-      "Recherche d’objets",
-      "Récupération de matériels",
-      "Personnel spécialisé en régie",
-      "Assistance aux travaux de digues",
+      "Inspection des navires de tous types",
+      "Renflouage par pompage ou structure gonflable",
+      "Recherche et récupération d’objets divers",
+      "Prélèvements solides et liquides",
+      "Travaux de sablage",
+      "Pose de géotextile pour les digues",
+      "Location de personnel spécialisé en régie",
+      "Mise à disposition de moyens techniques",
+      "Assistance aux travaux maritimes et portuaires",
     ],
   },
 ];
@@ -169,15 +187,15 @@ const advantages = [
   },
   {
     icon: Waves,
-    value: "80 m",
+    value: "< 80 m",
     title: "Capacité d’intervention",
-    text: "Des moyens adaptés aux opérations en milieux maritimes complexes.",
+    text: "Des moyens adaptés aux opérations sous-marines et maritimes complexes.",
   },
   {
     icon: HardHat,
-    value: "24/7",
+    value: "Sur mesure",
     title: "Équipe opérationnelle",
-    text: "Une mobilisation rapide selon les contraintes et urgences du projet.",
+    text: "Des moyens humains et techniques mobilisés selon les contraintes du projet.",
   },
 ];
 
@@ -209,9 +227,9 @@ export default function ServicesPage() {
             </h2>
 
             <p>
-              Farre Service accompagne les acteurs industriels, portuaires et
-              hydrauliques dans la préparation et la réalisation de leurs
-              opérations sous-marines.
+              Farre Service accompagne les acteurs industriels, portuaires,
+              maritimes et hydrauliques dans la préparation et la réalisation
+              de leurs opérations sous-marines.
             </p>
 
             <div className="services-intro-checks">
@@ -227,7 +245,9 @@ export default function ServicesPage() {
 
               <div>
                 <Check />
-                <span>Équipements adaptés aux environnements immergés</span>
+                <span>
+                  Équipements adaptés aux environnements immergés
+                </span>
               </div>
 
               <div>
@@ -269,6 +289,7 @@ export default function ServicesPage() {
 
             <div className="services-intro-floating-card">
               <Waves />
+
               <div>
                 <strong>Expertise terrain</strong>
                 <span>Maritime et sous-marine</span>
@@ -343,10 +364,11 @@ export default function ServicesPage() {
                       </span>
 
                       <h3>{service.title}</h3>
+
                       <p>{service.description}</p>
 
                       <div className="services-showcase-list">
-                        {service.items.slice(0, 4).map((item) => (
+                        {service.items.map((item) => (
                           <div key={item}>
                             <CheckCircle2 />
                             <span>{item}</span>

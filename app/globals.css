@@ -5938,3 +5938,459 @@ ul {
 .portfolio-final-cta {
   min-height: 590px;
 }
+
+/* =========================================================
+   LOGOS DES CLIENTS — VERSION FINALE
+   Les logos PNG transparents restent lisibles grâce au fond blanc.
+   ========================================================= */
+
+.clients-premium-card-icon.has-logo {
+  display: flex;
+  width: 100%;
+  max-width: 180px;
+  height: 96px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 12px 18px;
+  border: 1px solid #e7eef1;
+  border-radius: 16px;
+  color: inherit;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(3, 31, 45, 0.07);
+}
+
+.clients-premium-logo {
+  display: block;
+  width: 100%;
+  max-width: 150px;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  transition: transform 300ms ease;
+}
+
+.clients-premium-card:hover .clients-premium-logo {
+  transform: scale(1.06);
+}
+
+@media (max-width: 700px) {
+  .clients-premium-card-icon.has-logo {
+    max-width: 165px;
+    height: 88px;
+    padding: 10px 15px;
+  }
+}
+
+
+/* =========================================================
+   PAGE PARTENAIRES — ANIMATIONS ET LOGOS PREMIUM
+   ========================================================= */
+
+.partners-orbit {
+  position: absolute;
+  border: 1px solid rgba(13, 159, 197, 0.13);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: partnersOrbit 18s linear infinite;
+}
+
+.partners-orbit-one {
+  top: -260px;
+  right: -230px;
+  width: 620px;
+  height: 620px;
+}
+
+.partners-orbit-two {
+  bottom: -190px;
+  left: -160px;
+  width: 410px;
+  height: 410px;
+  border-color: rgba(240, 88, 67, 0.1);
+  animation-direction: reverse;
+  animation-duration: 24s;
+}
+
+@keyframes partnersOrbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.partners-premium-main-image img {
+  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.partners-premium-visual:hover .partners-premium-main-image img {
+  transform: scale(1.055);
+}
+
+.partners-premium-small-image {
+  animation: partnersImageFloat 5s ease-in-out infinite;
+}
+
+.partners-premium-floating-card {
+  animation: partnersCardFloat 4.4s ease-in-out infinite;
+}
+
+@keyframes partnersImageFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0.8deg);
+  }
+}
+
+@keyframes partnersCardFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.partners-premium-stat-icon,
+.partners-premium-card-icon {
+  transition:
+    transform 350ms ease,
+    box-shadow 350ms ease;
+}
+
+.partners-premium-stat-card:hover .partners-premium-stat-icon,
+.partners-premium-card:hover .partners-premium-card-icon {
+  transform: rotate(-6deg) scale(1.08);
+  box-shadow: 0 16px 36px rgba(13, 159, 197, 0.18);
+}
+
+.clients-logo-marquee {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  margin: 0 0 34px;
+  padding: 18px 0;
+  border: 1px solid var(--border);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
+}
+
+.clients-logo-marquee-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 18px;
+  will-change: transform;
+}
+
+.clients-logo-marquee-item {
+  display: flex;
+  width: 210px;
+  height: 105px;
+  flex: 0 0 210px;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 24px;
+  border: 1px solid rgba(7, 80, 106, 0.1);
+  border-radius: 18px;
+  background: var(--white);
+}
+
+.clients-logo-marquee-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.65;
+  transition:
+    filter 300ms ease,
+    opacity 300ms ease,
+    transform 300ms ease;
+}
+
+.clients-logo-marquee-item:hover img {
+  filter: grayscale(0);
+  opacity: 1;
+  transform: scale(1.06);
+}
+
+.clients-logo-marquee-fade {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  width: 110px;
+  pointer-events: none;
+}
+
+.clients-logo-marquee-fade-left {
+  left: 0;
+  background: linear-gradient(90deg, var(--background), transparent);
+}
+
+.clients-logo-marquee-fade-right {
+  right: 0;
+  background: linear-gradient(-90deg, var(--background), transparent);
+}
+
+.clients-premium-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.clients-premium-card::before {
+  position: absolute;
+  z-index: -1;
+  top: -80px;
+  right: -80px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(13, 159, 197, 0.08);
+  content: "";
+  transition: transform 450ms ease;
+}
+
+.clients-premium-card:hover::before {
+  transform: scale(2.2);
+}
+
+.clients-premium-card > i {
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  left: 22px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--ocean-400));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 350ms ease;
+}
+
+.clients-premium-card:hover > i {
+  transform: scaleX(1);
+}
+
+.clients-premium-card-icon.has-logo {
+  width: 100%;
+  height: 72px;
+  padding: 8px;
+  border-radius: 15px;
+  background: transparent;
+}
+
+.clients-premium-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.76;
+  transition:
+    filter 300ms ease,
+    opacity 300ms ease;
+}
+
+.clients-premium-card:hover .clients-premium-logo {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .clients-logo-marquee-fade {
+    width: 55px;
+  }
+
+  .clients-logo-marquee-item {
+    width: 175px;
+    flex-basis: 175px;
+  }
+}
+
+@media (max-width: 600px) {
+  .clients-logo-marquee {
+    margin-bottom: 25px;
+    border-radius: 19px;
+  }
+
+  .clients-logo-marquee-item {
+    width: 150px;
+    height: 88px;
+    flex-basis: 150px;
+    padding: 15px;
+  }
+
+  .partners-premium-floating-card,
+  .partners-premium-small-image {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners-orbit,
+  .partners-premium-small-image,
+  .partners-premium-floating-card {
+    animation: none !important;
+  }
+
+  .partners-premium-main-image img,
+  .clients-logo-marquee-item img,
+  .clients-premium-logo {
+    transition: none !important;
+  }
+}
+
+/* =========================================================
+   CORRECTION FINALE — CARROUSEL CLIENTS HORIZONTAL EN COULEUR
+   ========================================================= */
+
+.clients-logo-carousel {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 42px;
+  padding: 18px 0;
+}
+
+.clients-logo-carousel-track {
+  display: flex !important;
+  width: max-content;
+  min-width: max-content;
+  flex-flow: row nowrap !important;
+  align-items: center;
+  gap: 64px;
+  will-change: transform;
+}
+
+.clients-logo-carousel-item {
+  display: flex !important;
+  width: 190px;
+  min-width: 190px;
+  height: 96px;
+  flex: 0 0 190px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.clients-logo-carousel-item img {
+  display: block;
+  width: auto;
+  max-width: 180px;
+  height: auto;
+  max-height: 86px;
+  object-fit: contain;
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none;
+  transition: transform 280ms ease;
+}
+
+.clients-logo-carousel-item:hover img {
+  filter: none !important;
+  opacity: 1 !important;
+  transform: scale(1.05);
+}
+
+.clients-logo-carousel-fade {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  width: 95px;
+  pointer-events: none;
+}
+
+.clients-logo-carousel-fade-left {
+  left: 0;
+  background: linear-gradient(90deg, var(--background) 0%, transparent 100%);
+}
+
+.clients-logo-carousel-fade-right {
+  right: 0;
+  background: linear-gradient(-90deg, var(--background) 0%, transparent 100%);
+}
+
+/* Aucun effet noir et blanc sur les logos */
+.clients-logo-carousel img,
+.clients-logo-carousel-item img,
+.clients-premium-logo {
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+/* Les anciennes cartes clients ne sont plus utilisées */
+.clients-premium-grid,
+.clients-premium-card {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .clients-logo-carousel-track {
+    gap: 44px;
+  }
+
+  .clients-logo-carousel-item {
+    width: 165px;
+    min-width: 165px;
+    height: 88px;
+    flex-basis: 165px;
+  }
+
+  .clients-logo-carousel-item img {
+    max-width: 155px;
+    height: 78px;
+  }
+
+  .clients-logo-carousel-fade {
+    width: 58px;
+  }
+}
+
+@media (max-width: 600px) {
+  .clients-logo-carousel {
+    margin-top: 30px;
+    padding: 12px 0;
+  }
+
+  .clients-logo-carousel-track {
+    gap: 28px;
+  }
+
+  .clients-logo-carousel-item {
+    width: 135px;
+    min-width: 135px;
+    height: 76px;
+    flex-basis: 135px;
+  }
+
+  .clients-logo-carousel-item img {
+    max-width: 125px;
+    height: 66px;
+  }
+
+  .clients-logo-carousel-fade {
+    width: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clients-logo-carousel-track {
+    transform: none !important;
+  }
+
+  .clients-logo-carousel-item img {
+    transition: none !important;
+  }
+}

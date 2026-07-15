@@ -17,38 +17,155 @@ import Reveal from "../components/Reveal";
 export const metadata: Metadata = {
   title: "Portfolio",
   description:
-    "Découvrez les principales réalisations maritimes, hydrauliques et sous-marines de Farre Service.",
+    "Découvrez les principales réalisations maritimes, portuaires, hydrauliques, industrielles et sous-marines de Farre Service.",
 };
 
 const projects = [
-  { image: "/images/1.jpg", category: "Travaux hydrauliques", title: "Mise en place de conduites maritimes", location: "Installation industrielle" },
-  { image: "/images/2.jpg", category: "Repêchage", title: "Repêchage d’un équipement immergé", location: "Barrage" },
-  { image: "/images/3.jpg", category: "Construction", title: "Réfection d’une brise-lame", location: "Bethioua" },
-  { image: "/images/4.jpg", category: "Inspection", title: "Préparation d’une inspection sous-marine", location: "Aïn Témouchent" },
-  { image: "/images/5.jpg", category: "Travaux portuaires", title: "Pose de caissons en béton", location: "Port d’Arzew" },
-  { image: "/images/6.jpg", category: "Conduites", title: "Installation de conduites PEHD", location: "Mostaganem" },
-  { image: "/images/7.jpg", category: "Balisage", title: "Fixation de balises maritimes", location: "Mers El Hadjadj" },
-  { image: "/images/8.jpg", category: "Maintenance", title: "Maintenance des protections anodiques", location: "Oran" },
-  { image: "/images/9.jpg", category: "Soudure", title: "Découpage et soudure de pieux", location: "Site industriel" },
-  { image: "/images/10.jpg", category: "Nettoyage", title: "Grattage et nettoyage d’un bassin", location: "Beni Saf" },
-  { image: "/images/11.jpg", category: "Soudure", title: "Soudure sous-marine", location: "Bethioua" },
-  { image: "/images/12.jpg", category: "Aquaculture", title: "Installation de cages flottantes", location: "Site aquacole" },
-  { image: "/images/13.jpg", category: "Offshore", title: "Travaux offshore en plongée profonde", location: "Mer Méditerranée" },
-  { image: "/images/14.jpg", category: "Protection portuaire", title: "Mise en place de blocs de protection", location: "Port d’Oran" },
-  { image: "/images/15.jpg", category: "Hydraulique", title: "Réparation d’un canal de rejet", location: "El Mactaa" },
-  { image: "/images/16.jpg", category: "Inspection", title: "Inspection sous-marine d’un navire", location: "En mer" },
-  { image: "/images/17.jpg", category: "Maintenance industrielle", title: "Changement de filtres de pompes", location: "Site industriel" },
-  { image: "/images/18.jpg", category: "Maintenance", title: "Maintenance d’une station électrique", location: "Aïn Témouchent" },
-  { image: "/images/19.jpg", category: "Offshore", title: "Maintenance de conduites PEHD", location: "Port d’Arzew" },
-  { image: "/images/20.jpg", category: "Inspection vidéo", title: "Contrôle d’une structure immergée", location: "Site portuaire" },
+  {
+    image: "/images/1.jpg",
+    category: "Travaux hydrauliques",
+    title:
+      "Mise en place de pipelines au niveau d’une usine de production électrique",
+    location: "M’Daourouch, wilaya d’Annaba",
+  },
+  {
+    image: "/images/2.jpg",
+    category: "Repêchage",
+    title: "Repêchage d’une grue de 100 tonnes",
+    location: "Barrage Sidi M’Hamed, wilaya de Relizane",
+  },
+  {
+    image: "/images/3.jpg",
+    category: "Construction maritime",
+    title:
+      "Réfection d’un brise-lames par coffrage sous-marin perdu pour le compte de GNL3Z",
+    location: "Bethioua",
+  },
+  {
+    image: "/images/4.jpg",
+    category: "Inspection sous-marine",
+    title:
+      "Préparation de l’inspection sous-marine à l’intérieur et à l’extérieur du canal d’amenée de la station électrique TERGA",
+    location: "Wilaya d’Aïn Témouchent",
+  },
+  {
+    image: "/images/5.jpg",
+    category: "Travaux portuaires",
+    title: "Pose de caissons en béton",
+    location: "Port d’Arzew",
+  },
+  {
+    image: "/images/6.jpg",
+    category: "Conduites PEHD",
+    title:
+      "Installation et montage de conduites en PEHD de 2 000 mm de diamètre au niveau de SONACTEL, pour le compte de Samsung",
+    location: "Wilaya de Mostaganem",
+  },
+  {
+    image: "/images/7.jpg",
+    category: "Balisage maritime",
+    title:
+      "Fixation des balises de signalisation maritime pour une usine d’ammoniac",
+    location: "Mers El Hadjadj, wilaya d’Oran",
+  },
+  {
+    image: "/images/8.jpg",
+    category: "Maintenance industrielle",
+    title:
+      "Maintenance et fixation des protections anodiques et des garde-corps au niveau de l’usine AOA",
+    location: "Mers El Hadjadj, wilaya d’Oran",
+  },
+  {
+    image: "/images/9.jpg",
+    category: "Soudure et découpage",
+    title:
+      "Découpage et soudure des pieux du pont de chargement pour l’usine AOA",
+    location: "Mers El Hadjadj, wilaya d’Oran",
+  },
+  {
+    image: "/images/10.jpg",
+    category: "Nettoyage sous-marin",
+    title:
+      "Grattage et nettoyage du bassin de captage de la station de dessalement de Beni Saf",
+    location: "Beni Saf, wilaya d’Aïn Témouchent",
+  },
+  {
+    image: "/images/11.jpg",
+    category: "Soudure sous-marine",
+    title: "Travaux de soudure sous-marine au niveau du bassin GNL2-Z",
+    location: "Bethioua",
+  },
+  {
+    image: "/images/12.jpg",
+    category: "Aquaculture",
+    title:
+      "Installation de cages flottantes destinées à l’élevage de poissons",
+    location: "Site aquacole",
+  },
+  {
+    image: "/images/13.jpg",
+    category: "Travaux offshore",
+    title:
+      "Travaux offshore STH avec intervention en plongée profonde à 70 mètres",
+    location: "Zone offshore",
+  },
+  {
+    image: "/images/14.jpg",
+    category: "Protection portuaire",
+    title:
+      "Mise en place de blocs de protection au niveau du quai de service",
+    location: "Port d’Oran",
+  },
+  {
+    image: "/images/15.jpg",
+    category: "Travaux hydrauliques",
+    title:
+      "Réparation du canal de rejet de la station de dessalement d’El Mactaa, d’une capacité de 500 000 m³ par jour",
+    location: "El Mactaa, wilaya d’Oran",
+  },
+  {
+    image: "/images/16.jpg",
+    category: "Inspection navale",
+    title:
+      "Inspection sous-marine d’un navire de Hyproc Shipping Company",
+    location: "En mer",
+  },
+  {
+    image: "/images/17.jpg",
+    category: "Maintenance industrielle",
+    title:
+      "Changement des filtres en amont des pompes pour l’usine Tosyali Algérie",
+    location: "Site industriel Tosyali Algérie",
+  },
+  {
+    image: "/images/18.jpg",
+    category: "Maintenance électrique",
+    title:
+      "Travaux de maintenance au niveau de la station électrique TERGA",
+    location: "Wilaya d’Aïn Témouchent",
+  },
+  {
+    image: "/images/19.jpg",
+    category: "Maintenance offshore",
+    title:
+      "Maintenance des conduites offshore en PEHD dans la zone de stockage",
+    location: "Port d’Arzew",
+  },
+  {
+    image: "/images/20.jpg",
+    category: "Inspection sous-marine",
+    title:
+      "Inspection visuelle et contrôle vidéo d’une structure immergée",
+    location: "Site portuaire",
+  },
 ];
 
 const statistics = [
   {
     icon: Camera,
     value: "20",
-    title: "Projets présentés",
-    text: "Une sélection d’interventions réalisées dans différents environnements.",
+    title: "Réalisations présentées",
+    text: "Une sélection d’interventions menées dans différents environnements.",
   },
   {
     icon: Waves,
@@ -58,9 +175,9 @@ const statistics = [
   },
   {
     icon: ShieldCheck,
-    value: "100%",
-    title: "Engagement terrain",
-    text: "Des opérations préparées selon les contraintes et objectifs du site.",
+    value: "Terrain",
+    title: "Expertise opérationnelle",
+    text: "Des interventions préparées selon les contraintes de chaque site.",
   },
 ];
 
@@ -69,10 +186,12 @@ export default function PortfolioPage() {
     <>
       <PageHero
         title="Notre portfolio"
-        description="Découvrez en images quelques travaux et interventions réalisés par nos équipes."
+        description="Découvrez en images quelques travaux et interventions réalisés par les équipes de Farre Service."
         image="/images/16.jpg"
         currentPage="Portfolio"
       />
+
+      {/* Introduction */}
 
       <section className="portfolio-premium-intro">
         <div className="portfolio-premium-pattern" />
@@ -84,9 +203,7 @@ export default function PortfolioPage() {
               Réalisations terrain
             </span>
 
-            <h2>
-              Une expertise visible à travers des projets concrets
-            </h2>
+            <h2>Une expertise visible à travers des projets concrets</h2>
 
             <p>
               Découvrez une sélection d’interventions menées par Farre Service
@@ -99,23 +216,31 @@ export default function PortfolioPage() {
                 <CheckCircle2 />
                 <span>Interventions sur des sites complexes</span>
               </div>
+
               <div>
                 <CheckCircle2 />
                 <span>Équipes techniques spécialisées</span>
               </div>
+
               <div>
                 <CheckCircle2 />
                 <span>Moyens adaptés à chaque environnement</span>
               </div>
             </div>
 
-            <Link href="/contact" className="button button-primary button-lg">
+            <Link
+              href="/contact"
+              className="button button-primary button-lg"
+            >
               Étudier votre projet
               <ArrowRight size={18} />
             </Link>
           </Reveal>
 
-          <Reveal className="portfolio-premium-visual" direction="right">
+          <Reveal
+            className="portfolio-premium-visual"
+            direction="right"
+          >
             <div
               className="portfolio-premium-main-image"
               style={{
@@ -125,8 +250,9 @@ export default function PortfolioPage() {
             >
               <Image
                 src="/images/13.jpg"
-                alt="Travaux offshore Farre Service"
+                alt="Travaux offshore réalisés par Farre Service"
                 fill
+                priority
                 sizes="(max-width: 900px) 100vw, 50vw"
                 style={{ objectFit: "cover" }}
               />
@@ -143,7 +269,7 @@ export default function PortfolioPage() {
             >
               <Image
                 src="/images/9.jpg"
-                alt="Soudure sous-marine"
+                alt="Travaux de soudure et de découpage sous-marins"
                 fill
                 sizes="260px"
                 style={{ objectFit: "cover" }}
@@ -152,6 +278,7 @@ export default function PortfolioPage() {
 
             <div className="portfolio-premium-floating-card">
               <HardHat />
+
               <div>
                 <strong>Expertise opérationnelle</strong>
                 <span>Sur terre, en port et sous l’eau</span>
@@ -160,6 +287,8 @@ export default function PortfolioPage() {
           </Reveal>
         </div>
       </section>
+
+      {/* Statistiques */}
 
       <section className="portfolio-premium-stats">
         <div className="container portfolio-premium-stats-grid">
@@ -185,6 +314,8 @@ export default function PortfolioPage() {
         </div>
       </section>
 
+      {/* Galerie */}
+
       <section className="portfolio-gallery-section">
         <div className="portfolio-gallery-glow portfolio-gallery-glow-one" />
         <div className="portfolio-gallery-glow portfolio-gallery-glow-two" />
@@ -192,8 +323,13 @@ export default function PortfolioPage() {
         <div className="container">
           <Reveal className="portfolio-gallery-heading">
             <div>
-              <span className="eyebrow eyebrow-light">Notre galerie</span>
-              <h2>Des réalisations dans des environnements exigeants</h2>
+              <span className="eyebrow eyebrow-light">
+                Notre galerie
+              </span>
+
+              <h2>
+                Des réalisations dans des environnements exigeants
+              </h2>
             </div>
 
             <p>
@@ -215,7 +351,9 @@ export default function PortfolioPage() {
                     "portfolio-premium-item",
                     wide ? "portfolio-premium-item-wide" : "",
                     tall ? "portfolio-premium-item-tall" : "",
-                  ].join(" ")}
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                 >
                   <article
                     className="portfolio-premium-card"
@@ -228,7 +366,7 @@ export default function PortfolioPage() {
                   >
                     <Image
                       src={project.image}
-                      alt={project.title}
+                      alt={`${project.title} — ${project.location}`}
                       fill
                       sizes={
                         wide
@@ -254,7 +392,7 @@ export default function PortfolioPage() {
 
                       <p className="portfolio-premium-location">
                         <MapPin />
-                        {project.location}
+                        <span>{project.location}</span>
                       </p>
                     </div>
                   </article>
@@ -264,6 +402,8 @@ export default function PortfolioPage() {
           </div>
         </div>
       </section>
+
+      {/* Appel à l’action */}
 
       <section
         className="portfolio-final-cta"
@@ -275,7 +415,7 @@ export default function PortfolioPage() {
       >
         <Image
           src="/images/page3.png"
-          alt="Intervention spécialisée Farre Service"
+          alt="Intervention sous-marine spécialisée de Farre Service"
           fill
           className="portfolio-final-cta-image"
           sizes="100vw"
@@ -296,18 +436,27 @@ export default function PortfolioPage() {
             </h2>
 
             <p>
-              Décrivez-nous votre besoin et les caractéristiques de votre site.
-              Notre équipe vous proposera une solution adaptée.
+              Décrivez-nous votre besoin ainsi que les caractéristiques de
+              votre site. Notre équipe vous proposera une solution adaptée.
             </p>
           </Reveal>
 
-          <Reveal className="portfolio-final-cta-actions" direction="right">
-            <Link href="/contact" className="button button-primary button-lg">
+          <Reveal
+            className="portfolio-final-cta-actions"
+            direction="right"
+          >
+            <Link
+              href="/contact"
+              className="button button-primary button-lg"
+            >
               Parler à notre équipe
               <ArrowRight size={19} />
             </Link>
 
-            <a href="tel:+213660952397" className="portfolio-final-cta-phone">
+            <a
+              href="tel:+213660952397"
+              className="portfolio-final-cta-phone"
+            >
               <span>Contact direct</span>
               <strong>0660 952 397</strong>
             </a>

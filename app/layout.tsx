@@ -1,20 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Manrope } from "next/font/google";
 
-
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import ScrollProgress from "./components/ScrollProgress";
 import WhatsAppButton from "./components/WhatsAppButton";
+
 import "./globals.css";
-import { Import } from "lucide-react";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   display: "swap",
 });
-<html lang="fr" data-scroll-behavior="smooth"></html>
+
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
@@ -26,8 +25,10 @@ export const metadata: Metadata = {
     default: "EURL Farre Service | Travaux sous-marins",
     template: "%s | EURL Farre Service",
   },
+
   description:
     "Entreprise spécialisée dans les travaux sous-marins, maritimes, portuaires et hydrauliques en Algérie.",
+
   keywords: [
     "Farre Service",
     "travaux sous-marins",
@@ -39,6 +40,18 @@ export const metadata: Metadata = {
     "Oran",
     "Arzew",
   ],
+
+  icons: {
+    icon: [
+      {
+        url: "/images/logo.png",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/images/logo.png",
+    apple: "/images/logo.png",
+  },
+
   openGraph: {
     title: "EURL Farre Service",
     description:
@@ -54,6 +67,19 @@ export const metadata: Metadata = {
       },
     ],
   },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "EURL Farre Service",
+    description:
+      "Expertise maritime, portuaire, hydraulique et sous-marine.",
+    images: ["/images/1.jpg"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const viewport: Viewport = {
@@ -68,14 +94,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr">
+    <html lang="fr" data-scroll-behavior="smooth">
       <body className={`${inter.variable} ${manrope.variable}`}>
         <ScrollProgress />
+
         <Header />
 
         <main>{children}</main>
 
         <Footer />
+
         <WhatsAppButton />
       </body>
     </html>
