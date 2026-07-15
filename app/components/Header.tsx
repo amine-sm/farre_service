@@ -44,9 +44,14 @@ export default function Header() {
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -55,16 +60,44 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = menuOpen ? "hidden" : previousOverflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow =
+      document.documentElement.style.overflow;
+
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+    }
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow =
+        previousHtmlOverflow;
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/";
+    if (href === "/") {
+      return pathname === "/";
+    }
+
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
@@ -79,19 +112,38 @@ export default function Header() {
           .filter(Boolean)
           .join(" ")}
       >
+        {/* Barre supérieure */}
         <div className="header-top">
           <div className="container header-top-content">
-            <span>Travaux maritimes, portuaires et sous-marins</span>
+            <span className="header-top-description">
+              Travaux maritimes, portuaires et sous-marins
+            </span>
 
-            <a href="tel:+213660952397" aria-label="Appeler Farre Service">
-              <Phone size={14} aria-hidden="true" />
-              <span>0660 952 397</span>
+            <a
+              href="tel:+213660952397"
+              className="header-phone"
+              aria-label="Appeler Farre Service au 0660 952 397"
+            >
+              <Phone
+                className="header-phone-icon"
+                size={15}
+                aria-hidden="true"
+              />
+
+              <span className="header-phone-number">
+                0660 952 397
+              </span>
             </a>
           </div>
         </div>
 
+        {/* Navigation principale */}
         <div className="container header-main">
-          <Link href="/" className="brand" aria-label="Accueil Farre Service">
+          <Link
+            href="/"
+            className="brand"
+            aria-label="Accueil Farre Service"
+          >
             <span className="brand-logo">
               <Image
                 src="/images/logorg.png"
@@ -108,17 +160,26 @@ export default function Header() {
             </span>
           </Link>
 
-          <nav className="desktop-nav" aria-label="Navigation principale">
-            {navigation.map((item) => (
-              <Link
-                href={item.href}
-                key={item.href}
-                className={isActive(item.href) ? "nav-link active" : "nav-link"}
-                aria-current={isActive(item.href) ? "page" : undefined}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <nav
+            className="desktop-nav"
+            aria-label="Navigation principale"
+          >
+            {navigation.map((item) => {
+              const active = isActive(item.href);
+
+              return (
+                <Link
+                  href={item.href}
+                  key={item.href}
+                  className={
+                    active ? "nav-link active" : "nav-link"
+                  }
+                  aria-current={active ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <Link href="/contact" className="header-cta">
@@ -128,39 +189,65 @@ export default function Header() {
           <button
             type="button"
             className="mobile-menu-button"
-            onClick={() => setMenuOpen((value) => !value)}
-            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            onClick={() => {
+              setMenuOpen((currentValue) => !currentValue);
+              setHidden(false);
+            }}
+            aria-label={
+              menuOpen ? "Fermer le menu" : "Ouvrir le menu"
+            }
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
           >
-            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+            {menuOpen ? (
+              <X size={27} aria-hidden="true" />
+            ) : (
+              <Menu size={27} aria-hidden="true" />
+            )}
           </button>
         </div>
       </header>
 
+      {/* Menu mobile */}
       <div
         id="mobile-navigation"
-        className={menuOpen ? "mobile-menu open" : "mobile-menu"}
+        className={
+          menuOpen ? "mobile-menu open" : "mobile-menu"
+        }
         aria-hidden={!menuOpen}
       >
         <nav aria-label="Navigation mobile">
-          {navigation.map((item, index) => (
-            <Link
-              href={item.href}
-              key={item.href}
-              className={
-                isActive(item.href)
-                  ? "mobile-menu-link active"
-                  : "mobile-menu-link"
-              }
-              aria-current={isActive(item.href) ? "page" : undefined}
-            >
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {item.label}
-            </Link>
-          ))}
+          {navigation.map((item, index) => {
+            const active = isActive(item.href);
 
-          <Link href="/contact" className="button button-primary mobile-menu-cta">
+            return (
+              <Link
+                href={item.href}
+                key={item.href}
+                className={
+                  active
+                    ? "mobile-menu-link active"
+                    : "mobile-menu-link"
+                }
+                aria-current={active ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
+                tabIndex={menuOpen ? 0 : -1}
+              >
+                <span>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                {item.label}
+              </Link>
+            );
+          })}
+
+          <Link
+            href="/contact"
+            className="button button-primary mobile-menu-cta"
+            onClick={() => setMenuOpen(false)}
+            tabIndex={menuOpen ? 0 : -1}
+          >
             Demander un devis
           </Link>
         </nav>

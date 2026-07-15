@@ -6394,3 +6394,245 @@ ul {
     transition: none !important;
   }
 }
+
+/* =========================================================
+   CORRECTION FINALE — HEADER MOBILE ET DÉBORDEMENT HORIZONTAL
+   ========================================================= */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.site-header {
+  width: 100%;
+  max-width: 100%;
+}
+
+.header-top-content,
+.header-main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.header-phone,
+.header-top-content a {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 100%;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.header-phone svg,
+.header-top-content a svg {
+  min-width: 14px;
+  flex-shrink: 0;
+}
+
+.brand {
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+
+.brand-logo {
+  min-width: 67px;
+  flex: 0 0 67px;
+}
+
+.brand-text {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.brand-text strong,
+.brand-text small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mobile-menu-button {
+  position: relative;
+  z-index: 1002;
+  min-width: 46px;
+  flex: 0 0 46px;
+  margin-left: 14px;
+  padding: 0;
+}
+
+.mobile-menu {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 1120px) {
+  .header-main {
+    gap: 14px;
+  }
+
+  .brand {
+    max-width: calc(100% - 60px);
+    flex: 1 1 auto;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+  }
+}
+
+@media (max-width: 700px) {
+  .container,
+  .header-top-content,
+  .header-main {
+    width: calc(100% - 30px);
+    max-width: calc(100% - 30px);
+  }
+
+  .header-top {
+    height: 35px;
+  }
+
+  .header-top-content {
+    justify-content: flex-end;
+  }
+
+  .header-top-content > span,
+  .header-top-description {
+    display: none;
+  }
+
+  .header-phone,
+  .header-top-content a {
+    max-width: 100%;
+    font-size: 0.76rem;
+  }
+
+  .header-main {
+    height: 77px;
+    gap: 8px;
+  }
+
+  .brand {
+    max-width: calc(100% - 58px);
+    flex: 1 1 auto;
+    gap: 11px;
+  }
+
+  .brand-logo {
+    width: 57px;
+    min-width: 57px;
+    height: 51px;
+    flex-basis: 57px;
+  }
+
+  .brand-text {
+    flex: 1 1 auto;
+  }
+
+  .brand-text strong {
+    font-size: 0.88rem;
+    letter-spacing: 0.025em;
+  }
+
+  .brand-text small {
+    font-size: 0.54rem;
+    letter-spacing: 0.11em;
+  }
+
+  .mobile-menu-button {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+    margin-left: 4px;
+  }
+
+  .mobile-menu {
+    padding:
+      calc(112px + env(safe-area-inset-top))
+      20px
+      calc(35px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-menu nav {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .whatsapp-button {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    max-width: calc(100vw - 32px);
+  }
+}
+
+@media (max-width: 390px) {
+  .container,
+  .header-top-content,
+  .header-main {
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+  }
+
+  .header-main {
+    gap: 6px;
+  }
+
+  .brand {
+    max-width: calc(100% - 52px);
+    gap: 9px;
+  }
+
+  .brand-logo {
+    width: 52px;
+    min-width: 52px;
+    height: 47px;
+    flex-basis: 52px;
+  }
+
+  .brand-text strong {
+    font-size: 0.8rem;
+  }
+
+  .brand-text small {
+    margin-top: 4px;
+    font-size: 0.48rem;
+    letter-spacing: 0.08em;
+  }
+
+  .mobile-menu-button {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+    margin-left: 2px;
+  }
+}
+
+@media (max-width: 340px) {
+  .brand-text small {
+    display: none;
+  }
+
+  .brand-text strong {
+    font-size: 0.76rem;
+  }
+
+  .header-phone,
+  .header-top-content a {
+    font-size: 0.72rem;
+  }
+}
