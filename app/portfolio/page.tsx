@@ -150,14 +150,8 @@ const projects = [
     title:
       "Maintenance des conduites offshore en PEHD dans la zone de stockage",
     location: "Port d’Arzew",
-  },
-  {
-    image: "/images/20.jpg",
-    category: "Inspection sous-marine",
-    title:
-      "Inspection visuelle et contrôle vidéo d’une structure immergée",
-    location: "Site portuaire",
-  },
+  }
+ 
 ];
 
 const statistics = [

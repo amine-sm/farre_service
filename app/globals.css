@@ -7428,3 +7428,128 @@ body {
     margin-top: 40px;
   }
 }
+
+/* ==========================================================
+   PORTFOLIO — CORRECTIONS FINALES RESPONSIVE
+   ========================================================== */
+.portfolio-premium-grid {
+  align-items: stretch;
+}
+
+.portfolio-premium-item,
+.portfolio-premium-item > div,
+.portfolio-premium-card {
+  height: 100%;
+}
+
+.portfolio-premium-card {
+  isolation: isolate;
+  min-height: 390px;
+}
+
+.portfolio-premium-card > img {
+  z-index: 0;
+}
+
+.portfolio-premium-overlay,
+.portfolio-premium-gradient,
+.portfolio-premium-number,
+.portfolio-premium-content {
+  z-index: 1;
+}
+
+.portfolio-premium-content h3 {
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.portfolio-premium-location span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1120px) {
+  .portfolio-premium-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 400px;
+  }
+
+  .portfolio-premium-item-wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .portfolio-premium-intro-grid,
+  .portfolio-gallery-heading,
+  .portfolio-final-cta-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portfolio-premium-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+    gap: 18px;
+  }
+
+  .portfolio-premium-item-wide,
+  .portfolio-premium-item-tall {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .portfolio-premium-card {
+    min-height: clamp(390px, 118vw, 540px);
+  }
+
+  .portfolio-premium-content h3 {
+    font-size: clamp(1.2rem, 5.4vw, 1.65rem);
+  }
+
+  .portfolio-premium-number {
+    font-size: 2.45rem;
+  }
+
+  .portfolio-final-cta-content {
+    gap: 38px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-premium-intro,
+  .portfolio-gallery-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .portfolio-premium-intro-content h2,
+  .portfolio-gallery-heading h2,
+  .portfolio-final-cta h2 {
+    font-size: clamp(2rem, 10vw, 2.65rem);
+  }
+
+  .portfolio-premium-stat-card {
+    padding: 28px 22px;
+    gap: 15px;
+  }
+
+  .portfolio-premium-stat-icon {
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+  }
+
+  .portfolio-premium-card {
+    min-height: 430px;
+    border-radius: 20px;
+  }
+
+  .portfolio-premium-content {
+    padding: 22px 20px;
+  }
+
+  .portfolio-premium-category {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
