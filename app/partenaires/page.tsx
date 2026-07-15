@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ComponentType } from "react";
+
 import {
   ArrowRight,
   Building2,
@@ -15,17 +16,34 @@ import {
   Users,
 } from "lucide-react";
 
-import Reveal from "../components/Reveal";
-import PageHero from "../components/PageHero";
 import { motion, useReducedMotion } from "motion/react";
 
+import PageHero from "../components/PageHero";
+import Reveal from "../components/Reveal";
+
+/* =========================================================
+   TYPES
+========================================================= */
+
 type PartnerItem = {
-  icon: ComponentType<{ size?: number | string; className?: string }>;
+  icon: ComponentType<{
+    size?: number | string;
+    className?: string;
+  }>;
   name: string;
   category: string;
   type: string;
   logo?: string;
 };
+
+type ClientItem = {
+  name: string;
+  logo?: string;
+};
+
+/* =========================================================
+   PARTENAIRES
+========================================================= */
 
 const partners: PartnerItem[] = [
   {
@@ -71,9 +89,15 @@ const partners: PartnerItem[] = [
     type: "Partenaire institutionnel",
   },
   {
+    icon: Building2,
+    name: "ENACT D’ORAN",
+    category: "Entreprise nationale",
+    type: "Partenaire technique",
+  },
+  {
     icon: ShieldCheck,
     name: "Protection civile",
-    category: "Unité du port d’Oran",
+    category: "Unité d’intervention au niveau du port d’Oran",
     type: "Partenaire opérationnel",
   },
   {
@@ -87,40 +111,89 @@ const partners: PartnerItem[] = [
     name: "CSUO",
     category: "Club sportif universitaire d’Oran",
     type: "Partenaire associatif",
-  }
+  },
 ];
 
-type ClientItem = { name: string; logo?: string };
+/* =========================================================
+   CLIENTS
+========================================================= */
 
 const clients: ClientItem[] = [
-  { name: "EURL SOSIM" },
-  { name: "MEDITRAM SPA" },
-  { name: "ALMIYAH ETTILEMÇANIA SPA" },
-  { name: "SARL EL OUKHOUWA" },
-  { name: "SPE", logo: "/images/spe.png" },
-  { name: "SEOR", logo: "/images/seor.png" },
-  { name: "CIAR", logo: "/images/ciar.png" },
-  { name: "Kahrama", logo: "/images/kahrama.png" },
-  { name: "Hyflux", logo: "/images/hyflux.png" },
-  { name: "SAA Assurances", logo: "/images/saa.png" },
-  { name: "Cosider Travaux Publics", logo: "/images/cosider.png" },
-  { name: "CAAT", logo: "/images/caat.png" },
-    { name: "L'Algerienne Assurances", logo: "/images/algerienne.png" },
-  { name: "EPA Arzew", logo: "/images/epa.png" },
-  { name: "GCB", logo: "/images/gcb.png" },
-  { name: "Daewoo E&C" },
+  {
+    name: "EURL SOSIM",
+  },
+  {
+    name: "MEDITRAM SPA",
+  },
+  {
+    name: "ALMIYAH ETTILEMÇANIA SPA",
+  },
+  {
+    name: "SARL EL OUKHOUWA",
+  },
+  {
+    name: "SPE",
+    logo: "/images/spe.png",
+  },
+  {
+    name: "SEOR",
+    logo: "/images/seor.png",
+  },
+  {
+    name: "CIAR",
+    logo: "/images/ciar.png",
+  },
+  {
+    name: "Kahrama",
+    logo: "/images/kahrama.png",
+  },
+  {
+    name: "Hyflux",
+    logo: "/images/hyflux.png",
+  },
+  {
+    name: "SAA Assurances",
+    logo: "/images/saa.png",
+  },
+  {
+    name: "Cosider Travaux Publics",
+    logo: "/images/cosider.png",
+  },
+  {
+    name: "CAAT",
+    logo: "/images/caat.png",
+  },
+  {
+    name: "L’Algérienne des Assurances",
+    logo: "/images/algerienne.png",
+  },
+  {
+    name: "EPA Arzew",
+    logo: "/images/epa.png",
+  },
+  {
+    name: "GCB",
+    logo: "/images/gcb.png",
+  },
+  {
+    name: "Daewoo E&C",
+  },
 ];
+
+/* =========================================================
+   STATISTIQUES
+========================================================= */
 
 const strengths = [
   {
     icon: Handshake,
-    value: "11+",
+    value: `${partners.length}+`,
     title: "Partenaires actifs",
     text: "Un réseau technique, académique et institutionnel solide.",
   },
   {
     icon: Building2,
-    value: "15+",
+    value: `${clients.length}+`,
     title: "Clients de référence",
     text: "Des entreprises nationales et internationales de premier plan.",
   },
@@ -132,15 +205,25 @@ const strengths = [
   },
 ];
 
+/* =========================================================
+   CARROUSEL DES LOGOS CLIENTS
+========================================================= */
+
 function ClientsLogoCarousel({ items }: { items: ClientItem[] }) {
   const reduceMotion = useReducedMotion();
+
   const logoClients = items.filter(
-    (client): client is ClientItem & { logo: string } => Boolean(client.logo),
+    (client): client is ClientItem & { logo: string } =>
+      Boolean(client.logo),
   );
+
   const marqueeClients = [...logoClients, ...logoClients];
 
   return (
-    <div className="clients-logo-carousel" aria-label="Logos de nos clients">
+    <div
+      className="clients-logo-carousel"
+      aria-label="Logos de nos principaux clients"
+    >
       <div className="clients-logo-carousel-fade clients-logo-carousel-fade-left" />
       <div className="clients-logo-carousel-fade clients-logo-carousel-fade-right" />
 
@@ -150,7 +233,11 @@ function ClientsLogoCarousel({ items }: { items: ClientItem[] }) {
         transition={
           reduceMotion
             ? undefined
-            : { duration: 24, repeat: Infinity, ease: "linear" }
+            : {
+                duration: 24,
+                repeat: Infinity,
+                ease: "linear",
+              }
         }
       >
         {marqueeClients.map((client, index) => (
@@ -158,16 +245,32 @@ function ClientsLogoCarousel({ items }: { items: ClientItem[] }) {
             className="clients-logo-carousel-item"
             key={`${client.name}-${index}`}
             aria-hidden={index >= logoClients.length}
-            whileHover={reduceMotion ? undefined : { scale: 1.1, y: -4 }}
-            transition={{ duration: 0.25 }}
+            whileHover={
+              reduceMotion
+                ? undefined
+                : {
+                    scale: 1.1,
+                    y: -4,
+                  }
+            }
+            transition={{
+              duration: 0.25,
+            }}
           >
             <Image
               src={client.logo}
-              alt={index < logoClients.length ? `Logo ${client.name}` : ""}
+              alt={
+                index < logoClients.length
+                  ? `Logo ${client.name}`
+                  : ""
+              }
               width={190}
               height={90}
               sizes="(max-width: 600px) 135px, 190px"
-              style={{ width: "auto", height: "auto" }}
+              style={{
+                width: "auto",
+                height: "auto",
+              }}
             />
           </motion.div>
         ))}
@@ -176,15 +279,27 @@ function ClientsLogoCarousel({ items }: { items: ClientItem[] }) {
   );
 }
 
+/* =========================================================
+   PAGE PARTENAIRES
+========================================================= */
+
 export default function PartenairesPage() {
   return (
     <>
+      {/* ===================================================
+          HERO
+      =================================================== */}
+
       <PageHero
         title="Partenaires et clients"
         description="Des collaborations solides avec des institutions, entreprises et acteurs du secteur maritime."
         image="/images/13.jpg"
         currentPage="Partenaires"
       />
+
+      {/* ===================================================
+          INTRODUCTION
+      =================================================== */}
 
       <section className="partners-premium-intro">
         <div className="partners-premium-pattern" />
@@ -198,12 +313,15 @@ export default function PartenairesPage() {
               Réseau professionnel
             </span>
 
-            <h2>Des collaborations durables au service de projets exigeants</h2>
+            <h2>
+              Des collaborations durables au service de projets exigeants
+            </h2>
 
             <p>
-              Farre Service s’appuie sur un réseau de partenaires techniques,
-              institutionnels, académiques et opérationnels pour accompagner
-              chaque mission avec précision, réactivité et expertise.
+              Farre Service s’appuie sur un réseau de partenaires
+              techniques, institutionnels, académiques et opérationnels
+              pour accompagner chaque mission avec précision,
+              réactivité et expertise.
             </p>
 
             <div className="partners-premium-checks">
@@ -211,23 +329,35 @@ export default function PartenairesPage() {
                 <CheckCircle2 />
                 <span>Compétences complémentaires</span>
               </div>
+
               <div>
                 <CheckCircle2 />
-                <span>Coopération avec des institutions reconnues</span>
+                <span>
+                  Coopération avec des institutions reconnues
+                </span>
               </div>
+
               <div>
                 <CheckCircle2 />
-                <span>Accompagnement adapté aux contraintes du terrain</span>
+                <span>
+                  Accompagnement adapté aux contraintes du terrain
+                </span>
               </div>
             </div>
 
-            <Link href="/contact" className="button button-primary button-lg">
+            <Link
+              href="/contact"
+              className="button button-primary button-lg"
+            >
               Proposer une collaboration
               <ArrowRight size={18} />
             </Link>
           </Reveal>
 
-          <Reveal className="partners-premium-visual" direction="right">
+          <Reveal
+            className="partners-premium-visual"
+            direction="right"
+          >
             <div className="partners-premium-main-image">
               <Image
                 src="/images/13.jpg"
@@ -249,25 +379,37 @@ export default function PartenairesPage() {
 
             <div className="partners-premium-floating-card">
               <Handshake />
+
               <div>
                 <strong>Partenariats solides</strong>
-                <span>Institutionnels, techniques et académiques</span>
+                <span>
+                  Institutionnels, techniques et académiques
+                </span>
               </div>
             </div>
           </Reveal>
         </div>
       </section>
 
+      {/* ===================================================
+          STATISTIQUES
+      =================================================== */}
+
       <section className="partners-premium-stats">
         <div className="container partners-premium-stats-grid">
           {strengths.map((item, index) => {
             const Icon = item.icon;
+
             return (
-              <Reveal key={item.title} delay={index * 0.08}>
+              <Reveal
+                key={item.title}
+                delay={index * 0.08}
+              >
                 <article className="partners-premium-stat-card">
                   <div className="partners-premium-stat-icon">
                     <Icon />
                   </div>
+
                   <div>
                     <strong>{item.value}</strong>
                     <h3>{item.title}</h3>
@@ -280,6 +422,10 @@ export default function PartenairesPage() {
         </div>
       </section>
 
+      {/* ===================================================
+          LISTE DES PARTENAIRES
+      =================================================== */}
+
       <section className="partners-network-section">
         <div className="partners-network-glow partners-network-glow-one" />
         <div className="partners-network-glow partners-network-glow-two" />
@@ -287,26 +433,38 @@ export default function PartenairesPage() {
         <div className="container">
           <Reveal className="partners-network-heading">
             <div>
-              <span className="eyebrow eyebrow-light">Nos partenaires</span>
-              <h2>Un réseau structuré autour de l’expertise maritime</h2>
+              <span className="eyebrow eyebrow-light">
+                Nos partenaires
+              </span>
+
+              <h2>
+                Un réseau structuré autour de l’expertise maritime
+              </h2>
             </div>
+
             <p>
-              Des partenaires sélectionnés pour leur savoir-faire, leur
-              connaissance du terrain et leur capacité à contribuer à des
-              opérations complexes.
+              Des partenaires sélectionnés pour leur savoir-faire,
+              leur connaissance du terrain et leur capacité à
+              contribuer à des opérations complexes.
             </p>
           </Reveal>
 
           <div className="partners-premium-grid">
             {partners.map((partner, index) => {
               const Icon = partner.icon;
+
               return (
-                <Reveal key={partner.name} delay={(index % 3) * 0.07}>
+                <Reveal
+                  key={partner.name}
+                  delay={(index % 3) * 0.07}
+                >
                   <article className="partners-premium-card">
                     <div className="partners-premium-card-top">
                       <div
                         className={`partners-premium-card-icon ${
-                          partner.logo ? "has-partner-logo" : ""
+                          partner.logo
+                            ? "has-partner-logo"
+                            : ""
                         }`}
                       >
                         {partner.logo ? (
@@ -316,19 +474,27 @@ export default function PartenairesPage() {
                             width={110}
                             height={64}
                             className="partners-premium-card-logo"
-                            style={{ width: "auto", height: "auto" }}
+                            style={{
+                              width: "auto",
+                              height: "auto",
+                            }}
                           />
                         ) : (
                           <Icon />
                         )}
                       </div>
-                      <span>{String(index + 1).padStart(2, "0")}</span>
+
+                      <span>
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
                     </div>
 
                     <span className="partners-premium-type">
                       {partner.type}
                     </span>
+
                     <h3>{partner.name}</h3>
+
                     <p>{partner.category}</p>
 
                     <div className="partners-premium-card-footer">
@@ -343,25 +509,34 @@ export default function PartenairesPage() {
         </div>
       </section>
 
+      {/* ===================================================
+          CLIENTS
+      =================================================== */}
+
       <section className="clients-premium-section">
         <div className="clients-premium-pattern" />
 
         <div className="container">
           <Reveal className="clients-premium-heading">
             <div>
-              <span className="eyebrow">Nos principaux clients</span>
+              <span className="eyebrow">
+                Nos principaux clients
+              </span>
+
               <h2 className="section-title">
                 Des entreprises qui nous accordent leur confiance
               </h2>
+
               <p>
-                Nous intervenons pour des acteurs industriels, portuaires,
-                hydrauliques, assurantiels et de travaux publics.
+                Nous intervenons pour des acteurs industriels,
+                portuaires, hydrauliques, assurantiels et de travaux
+                publics.
               </p>
             </div>
 
             <div className="clients-premium-count">
               <Building2 />
-              <strong>15+</strong>
+              <strong>{clients.length}+</strong>
               <span>Clients de référence</span>
             </div>
           </Reveal>
@@ -369,6 +544,10 @@ export default function PartenairesPage() {
           <ClientsLogoCarousel items={clients} />
         </div>
       </section>
+
+      {/* ===================================================
+          BANNIÈRE DE CONTACT
+      =================================================== */}
 
       <section className="partnership-premium-banner">
         <Image
@@ -378,6 +557,7 @@ export default function PartenairesPage() {
           className="partnership-premium-image"
           sizes="100vw"
         />
+
         <div className="partnership-premium-overlay" />
         <div className="partnership-premium-grid" />
 
@@ -386,19 +566,33 @@ export default function PartenairesPage() {
             <span className="partnership-premium-kicker">
               Construisons ensemble
             </span>
-            <h2>Vous souhaitez collaborer avec Farre Service ?</h2>
+
+            <h2>
+              Vous souhaitez collaborer avec Farre Service ?
+            </h2>
+
             <p>
               Contactez-nous pour étudier une collaboration technique,
               institutionnelle ou commerciale adaptée à vos objectifs.
             </p>
           </Reveal>
 
-          <Reveal className="partnership-premium-actions" direction="right">
-            <Link href="/contact" className="button button-primary button-lg">
+          <Reveal
+            className="partnership-premium-actions"
+            direction="right"
+          >
+            <Link
+              href="/contact"
+              className="button button-primary button-lg"
+            >
               Devenir partenaire
               <ArrowRight size={19} />
             </Link>
-            <a href="tel:+213660952397" className="partnership-premium-phone">
+
+            <a
+              href="tel:+213660952397"
+              className="partnership-premium-phone"
+            >
               <span>Contact direct</span>
               <strong>0660 952 397</strong>
             </a>

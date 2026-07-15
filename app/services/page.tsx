@@ -30,79 +30,75 @@ export const metadata: Metadata = {
 
 const services = [
   {
-    number: "01",
+    number: "A",
     icon: Camera,
     title: "Inspections sous-marines",
     shortTitle: "Inspection",
     description:
-      "Contrôle visuel, photographique et technique des ouvrages, équipements, navires et installations immergés.",
+      "Contrôle visuel, photographique, vidéo et technique des installations, ouvrages et équipements immergés.",
     image: "/images/6.jpg",
     items: [
-      "Inspection des installations hydro-techniques",
+      "Inspection sous-marine des installations hydrotechniques",
       "Inspection des balises de signalisation maritime",
-      "Inspection des ports, bassins et ouvrages immergés",
-      "Inspection des galeries et conduites d’eau de mer",
-      "Inspection des carènes, hélices et gouvernails",
+      "Inspection sous-marine des ouvrages immergés : ports, bassins et quais",
+      "Inspection des galeries et conduites d’amenée d’eau de mer",
+      "Inspection des éléments immergés des navires : carène, gouvernail et hélice",
       "Contrôle de la protection cathodique",
       "Inspection des prises d’eau de mer",
       "Inspection à sec de tous types de navires",
-      "Captures photographiques et vidéos",
+      "Prises de vues photographiques et vidéos sous l’eau",
       "Sondage et relevé bathymétrique",
-      "Relevés et rapports techniques",
     ],
   },
   {
-    number: "02",
+    number: "B1",
     icon: Wrench,
-    title: "Nettoyage et maintenance",
+    title: "Nettoyage et travaux de structure",
     shortTitle: "Maintenance",
     description:
-      "Entretien préventif et curatif des ouvrages immergés, structures maritimes et circuits hydrauliques.",
+      "Nettoyage, dévasement, entretien et remise en état des structures, bassins, pomperies et circuits immergés.",
     image: "/images/18.jpg",
     items: [
-      "Nettoyage et dévasement sous-marin",
-      "Nettoyage des ouvrages immergés",
-      "Nettoyage des galeries noyées",
-      "Entretien des bassins et pomperies",
-      "Nettoyage des canaux et conduites",
-      "Entretien des systèmes d’amenée d’eau de mer",
-      "Travaux sous-marins sur navires",
-      "Grattage des structures immergées",
+      "Travaux de nettoyage et de dévasement sous-marin",
+      "Nettoyage et entretien des ouvrages immergés",
+      "Nettoyage et entretien du système d’amenée d’eau de mer",
+      "Entretien des galeries, bassins, pomperies, canaux et conduites",
+      "Travaux d’assemblage sous-marins",
+      "Grattage et nettoyage des structures immergées",
       "Maintenance préventive et corrective",
     ],
   },
   {
-    number: "03",
+    number: "B2",
     icon: Anchor,
     title: "Entretien portuaire",
     shortTitle: "Portuaire",
     description:
-      "Interventions spécialisées sur les infrastructures portuaires, les quais, les plateformes et les équipements maritimes.",
+      "Interventions spécialisées sur les plateformes, cavités, protections et équipements des ports et quais.",
     image: "/images/12.jpg",
     items: [
       "Balisage maritime",
-      "Remorquage de plateformes",
       "Tirage et déplacement de plateformes",
-      "Entretien et colmatage des cavités",
+      "Entretien et colmatage des cavernes et cavités",
       "Pose de blocs de protection",
       "Suivi de l’état de la protection cathodique",
       "Entretien des quais et infrastructures portuaires",
-      "Installation et entretien des défenses",
+      "Installation et entretien des défenses portuaires",
     ],
   },
   {
-    number: "04",
+    number: "B3",
     icon: HardHat,
     title: "Soudure et découpage sous-marins",
-    shortTitle: "Construction",
+    shortTitle: "Soudure",
     description:
-      "Construction, assemblage, réparation et découpage de structures métalliques en environnement immergé.",
+      "Réparation, chemisage, découpage et fixation de structures métalliques dans les environnements immergés.",
     image: "/images/9.jpg",
     items: [
       "Soudure sous-marine",
       "Découpage métallique sous-marin",
       "Chemisage des pieux",
-      "Réparation des pieux",
+      "Réparation et renforcement des pieux",
       "Pose d’anodes par soudure ou fixation",
       "Assemblage de structures métalliques",
       "Réparation de structures immergées",
@@ -110,43 +106,71 @@ const services = [
     ],
   },
   {
-    number: "05",
+    number: "B4",
+    icon: LifeBuoy,
+    title: "Assistance technique maritime",
+    shortTitle: "Assistance",
+    description:
+      "Assistance aux navires et aux opérations particulières nécessitant des plongeurs et des moyens spécialisés.",
+    image: "/images/3.jpg",
+    items: [
+      "Inspection des œuvres vives de tous types de navires",
+      "Intervention sur navires marchands et navires à passagers",
+      "Renflouage par pompage ou structure gonflable",
+      "Recherche, repérage et récupération d’objets divers",
+      "Assistance aux travaux maritimes et portuaires",
+      "Mise à disposition de moyens humains et techniques",
+    ],
+  },
+  {
+    number: "B5",
+    icon: Construction,
+    title: "Construction et protection des digues",
+    shortTitle: "Digues",
+    description:
+      "Travaux d’assistance à la construction, à la stabilisation et à la protection des digues et ouvrages côtiers.",
+    image: "/images/10.jpg",
+    items: [
+      "Pose de géotextile pour la construction des digues",
+      "Assistance technique à la mise en place des protections",
+      "Pose de blocs et éléments de protection",
+      "Préparation et contrôle des zones immergées",
+      "Intervention sur ouvrages côtiers et maritimes",
+    ],
+  },
+  {
+    number: "B6",
     icon: Droplets,
     title: "Travaux hydrauliques",
     shortTitle: "Hydraulique",
     description:
-      "Pose, maintenance et réparation de conduites et de réseaux hydrauliques de différents diamètres.",
+      "Pose, contrôle, maintenance et réparation de conduites et réseaux hydrauliques de différents diamètres.",
     image: "/images/15.jpg",
     items: [
       "Pose de conduites de différents diamètres",
-      "Installation de conduites offshore",
+      "Installation et maintenance de conduites offshore",
       "Installation de conduites PEHD",
-      "Réparation des prises d’eau",
-      "Réparation des canaux",
-      "Réparation des conduites de chlore",
-      "Réparation des conduites d’air",
+      "Réparation des conduites de chlore et d’air",
+      "Réparation des prises d’eau et des canaux",
       "Maintenance des réseaux hydrauliques",
       "Contrôle des conduites immergées",
     ],
   },
   {
-    number: "06",
-    icon: Construction,
-    title: "Assistance technique et travaux divers",
-    shortTitle: "Assistance",
+    number: "B7",
+    icon: Sparkles,
+    title: "Travaux divers et mise à disposition",
+    shortTitle: "Travaux divers",
     description:
-      "Mise à disposition de moyens humains, matériels et techniques pour les opérations maritimes particulières.",
-    image: "/images/3.jpg",
+      "Prestations complémentaires réalisées selon les contraintes du chantier et les besoins spécifiques du client.",
+    image: "/images/17.jpg",
     items: [
-      "Inspection des navires de tous types",
-      "Renflouage par pompage ou structure gonflable",
-      "Recherche et récupération d’objets divers",
-      "Prélèvements solides et liquides",
+      "Réalisation de prélèvements solides et liquides",
       "Travaux de sablage",
-      "Pose de géotextile pour les digues",
+      "Autres travaux sous-marins spécialisés",
       "Location de personnel spécialisé en régie",
-      "Mise à disposition de moyens techniques",
-      "Assistance aux travaux maritimes et portuaires",
+      "Mise à disposition de plongeurs professionnels",
+      "Mise à disposition de matériel et moyens techniques",
     ],
   },
 ];
@@ -321,50 +345,38 @@ export default function ServicesPage() {
             </p>
           </Reveal>
 
-          <div className="services-showcase-grid">
-            {services.map((service, index) => {
+          <div className="services-hierarchy">
+            {/* A — Inspection sous-marine, affichée seule */}
+            {(() => {
+              const service = services[0];
               const Icon = service.icon;
 
               return (
-                <Reveal
-                  key={service.title}
-                  delay={(index % 3) * 0.08}
-                  className={
-                    index === 0 || index === 5
-                      ? "services-showcase-item services-showcase-item-wide"
-                      : "services-showcase-item"
-                  }
-                >
-                  <article className="services-showcase-card">
+                <Reveal className="services-group-a">
+                  <div className="services-group-heading">
+                    <span className="services-group-letter">A</span>
+                    <div>
+                      <span>Travaux et services</span>
+                      <h3>Inspections sous-marines</h3>
+                    </div>
+                  </div>
+
+                  <article className="services-showcase-card services-showcase-card-featured">
                     <Image
                       src={service.image}
                       alt={service.title}
                       fill
-                      sizes={
-                        index === 0 || index === 5
-                          ? "(max-width: 900px) 100vw, 66vw"
-                          : "(max-width: 900px) 100vw, 33vw"
-                      }
+                      sizes="(max-width: 900px) 100vw, 100vw"
                     />
 
                     <div className="services-showcase-overlay" />
                     <div className="services-showcase-gradient" />
-
-                    <span className="services-showcase-number">
-                      {service.number}
-                    </span>
+                    <span className="services-showcase-number">A</span>
 
                     <div className="services-showcase-content">
-                      <div className="services-showcase-icon">
-                        <Icon />
-                      </div>
-
-                      <span className="services-showcase-category">
-                        {service.shortTitle}
-                      </span>
-
+                      <div className="services-showcase-icon"><Icon /></div>
+                      <span className="services-showcase-category">Inspection</span>
                       <h3>{service.title}</h3>
-
                       <p>{service.description}</p>
 
                       <div className="services-showcase-list">
@@ -377,14 +389,73 @@ export default function ServicesPage() {
                       </div>
 
                       <Link href="/contact">
-                        Demander une intervention
+                        Demander une inspection
                         <ArrowRight size={17} />
                       </Link>
                     </div>
                   </article>
                 </Reveal>
               );
-            })}
+            })()}
+
+            {/* B — Travaux de maintenance, répartis de B1 à B7 */}
+            <div className="services-group-b">
+              <Reveal className="services-group-heading services-group-heading-b">
+                <span className="services-group-letter">B</span>
+                <div>
+                  <span>Travaux de maintenance</span>
+                  <h3>Sept domaines d’intervention spécialisés</h3>
+                </div>
+              </Reveal>
+
+              <div className="services-showcase-grid services-showcase-grid-b">
+                {services.slice(1).map((service, index) => {
+                  const Icon = service.icon;
+
+                  return (
+                    <Reveal
+                      key={service.title}
+                      delay={(index % 3) * 0.08}
+                      className="services-showcase-item"
+                    >
+                      <article className="services-showcase-card">
+                        <Image
+                          src={service.image}
+                          alt={service.title}
+                          fill
+                          sizes="(max-width: 900px) 100vw, 33vw"
+                        />
+
+                        <div className="services-showcase-overlay" />
+                        <div className="services-showcase-gradient" />
+                        <span className="services-showcase-number">{service.number}</span>
+
+                        <div className="services-showcase-content">
+                          <div className="services-showcase-icon"><Icon /></div>
+                          <span className="services-showcase-category">{service.shortTitle}</span>
+                          <h3>{service.title}</h3>
+                          <p>{service.description}</p>
+
+                          <div className="services-showcase-list">
+                            {service.items.map((item) => (
+                              <div key={item}>
+                                <CheckCircle2 />
+                                <span>{item}</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <Link href="/contact">
+                            Demander une intervention
+                            <ArrowRight size={17} />
+                          </Link>
+                        </div>
+                      </article>
+                    </Reveal>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>

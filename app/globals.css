@@ -6986,3 +6986,445 @@ body {
     font-size: 1.05rem;
   }
 }
+/* =========================================================
+   PAGE SERVICES — ORGANISATION A / B1 À B7
+   Styles intégrés directement dans globals.css
+   ========================================================= */
+
+.services-hierarchy {
+  display: grid;
+  gap: 70px;
+}
+
+.services-group-a,
+.services-group-b {
+  position: relative;
+}
+
+.services-group-heading {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.services-group-letter {
+  display: inline-flex;
+  width: 68px;
+  min-width: 68px;
+  height: 68px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 22px;
+  color: var(--navy-950);
+  background: linear-gradient(135deg, #ffffff, #aee9f4);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-manrope), Arial, sans-serif;
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.services-group-heading > div > span {
+  display: block;
+  margin-bottom: 5px;
+  color: #83dbea;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.services-group-heading h3 {
+  color: var(--white);
+  font-family: var(--font-manrope), Arial, sans-serif;
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+  line-height: 1.15;
+}
+
+.services-group-heading-b {
+  padding-top: 10px;
+}
+
+.services-group-b::before {
+  position: absolute;
+  top: -34px;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(126, 217, 234, 0.35), transparent);
+  content: "";
+}
+
+.services-showcase-card-featured {
+  min-height: 660px;
+}
+
+.services-showcase-card-featured .services-showcase-content {
+  width: min(100%, 890px);
+}
+
+.services-showcase-card-featured .services-showcase-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 30px;
+}
+
+.services-showcase-card-featured .services-showcase-number {
+  font-size: clamp(5rem, 10vw, 9rem);
+  opacity: 0.15;
+}
+
+.services-showcase-grid-b {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.services-showcase-grid-b > :last-child {
+  grid-column: 2 / 3;
+}
+
+.services-showcase-grid-b .services-showcase-number {
+  min-width: 58px;
+  padding-inline: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: var(--white);
+  background: rgba(3, 31, 45, 0.52);
+  font-size: 1.05rem;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
+@media (max-width: 1050px) {
+  .services-showcase-grid-b {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .services-showcase-grid-b > :last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .services-hierarchy {
+    gap: 52px;
+  }
+
+  .services-group-heading {
+    align-items: flex-start;
+  }
+
+  .services-group-letter {
+    width: 56px;
+    min-width: 56px;
+    height: 56px;
+    border-radius: 18px;
+    font-size: 1.35rem;
+  }
+
+  .services-showcase-card-featured {
+    min-height: 760px;
+  }
+
+  .services-showcase-card-featured .services-showcase-list {
+    grid-template-columns: 1fr;
+  }
+
+  .services-showcase-grid-b {
+    grid-template-columns: 1fr;
+  }
+
+  .services-showcase-grid-b > :last-child {
+    grid-column: auto;
+  }
+}
+
+/* ==========================================================
+   CORRECTION SERVICES — CARTES ET TEXTES BIEN ORGANISÉS
+   À garder à la fin de globals.css
+========================================================== */
+
+.services-hierarchy {
+  display: grid;
+  gap: 76px;
+}
+
+.services-group-b {
+  position: relative;
+}
+
+/* Grille B1 à B7 */
+.services-showcase-grid.services-showcase-grid-b {
+  grid-auto-rows: auto;
+  align-items: stretch;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.services-showcase-grid-b .services-showcase-item {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+}
+
+.services-showcase-grid-b .services-showcase-card {
+  display: flex;
+  width: 100%;
+  min-height: 720px;
+  height: auto;
+  flex-direction: column;
+  isolation: isolate;
+}
+
+/* L'image reste en fond sans perturber le contenu */
+.services-showcase-grid-b .services-showcase-card > img,
+.services-showcase-card-featured > img {
+  position: absolute !important;
+  z-index: -3;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+
+/* Dégradé plus sombre pour rendre tous les textes lisibles */
+.services-showcase-grid-b .services-showcase-overlay {
+  z-index: -2;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(3, 31, 45, 0.26) 0%,
+      rgba(3, 31, 45, 0.78) 35%,
+      rgba(3, 31, 45, 0.98) 72%,
+      #031f2d 100%
+    );
+}
+
+.services-showcase-grid-b .services-showcase-gradient {
+  z-index: -1;
+}
+
+/* Le contenu n'est plus en position absolue */
+.services-showcase-grid-b .services-showcase-content {
+  position: relative;
+  inset: auto;
+  display: flex;
+  width: 100%;
+  max-width: none;
+  min-height: 720px;
+  flex: 1;
+  flex-direction: column;
+  padding: 34px 30px 30px;
+}
+
+/* Icône compacte pour laisser plus de place au texte */
+.services-showcase-grid-b .services-showcase-icon {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 16px;
+}
+
+.services-showcase-grid-b .services-showcase-icon svg {
+  width: 25px;
+  height: 25px;
+}
+
+/* Numéro B1, B2... */
+.services-showcase-grid-b .services-showcase-number {
+  z-index: 5;
+  top: 20px;
+  right: 22px;
+  min-width: 58px;
+  padding: 6px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(3, 31, 45, 0.68);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: center;
+  backdrop-filter: blur(12px);
+}
+
+/* Titres : aucune sortie de carte */
+.services-showcase-grid-b .services-showcase-content h3 {
+  max-width: calc(100% - 8px);
+  margin-top: 7px;
+  font-size: clamp(1.45rem, 2.1vw, 2rem);
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* Description */
+.services-showcase-grid-b .services-showcase-content > p {
+  min-height: 86px;
+  margin-top: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.84rem;
+  line-height: 1.68;
+}
+
+/* Liste sur une seule colonne dans les cartes étroites */
+.services-showcase-grid-b .services-showcase-list {
+  display: grid;
+  margin-top: 22px;
+  grid-template-columns: 1fr;
+  gap: 11px;
+}
+
+.services-showcase-grid-b .services-showcase-list div {
+  display: grid;
+  align-items: start;
+  grid-template-columns: 17px minmax(0, 1fr);
+  gap: 9px;
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 0.77rem;
+  line-height: 1.52;
+}
+
+.services-showcase-grid-b .services-showcase-list svg {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+/* Bouton toujours aligné en bas */
+.services-showcase-grid-b .services-showcase-content > a {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: 25px;
+}
+
+/* Grande carte A */
+.services-showcase-card-featured {
+  min-height: 680px;
+  isolation: isolate;
+}
+
+.services-showcase-card-featured .services-showcase-overlay {
+  z-index: -2;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(3, 31, 45, 0.98) 0%,
+      rgba(3, 31, 45, 0.92) 52%,
+      rgba(3, 31, 45, 0.42) 100%
+    );
+}
+
+.services-showcase-card-featured .services-showcase-gradient {
+  z-index: -1;
+}
+
+.services-showcase-card-featured .services-showcase-content {
+  position: relative;
+  inset: auto;
+  width: min(100%, 920px);
+  max-width: none;
+  min-height: 680px;
+  padding: 44px;
+}
+
+.services-showcase-card-featured .services-showcase-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 28px;
+}
+
+/* Tablette */
+@media (max-width: 1100px) {
+  .services-showcase-grid.services-showcase-grid-b {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .services-showcase-grid-b > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .services-showcase-grid-b > :last-child .services-showcase-card {
+    min-height: 620px;
+  }
+
+  .services-showcase-grid-b > :last-child .services-showcase-content {
+    min-height: 620px;
+  }
+
+  .services-showcase-grid-b > :last-child .services-showcase-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .services-showcase {
+    padding: 85px 0 105px;
+  }
+
+  .services-showcase-heading {
+    display: block;
+    margin-bottom: 44px;
+  }
+
+  .services-showcase-heading > p {
+    margin-top: 18px;
+  }
+
+  .services-showcase-grid.services-showcase-grid-b {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .services-showcase-grid-b > :last-child {
+    grid-column: auto;
+  }
+
+  .services-showcase-grid-b .services-showcase-card,
+  .services-showcase-grid-b .services-showcase-content,
+  .services-showcase-grid-b > :last-child .services-showcase-card,
+  .services-showcase-grid-b > :last-child .services-showcase-content {
+    min-height: 0;
+  }
+
+  .services-showcase-grid-b .services-showcase-content {
+    padding: 28px 22px 25px;
+  }
+
+  .services-showcase-grid-b .services-showcase-content > p {
+    min-height: 0;
+  }
+
+  .services-showcase-grid-b > :last-child .services-showcase-list,
+  .services-showcase-card-featured .services-showcase-list {
+    grid-template-columns: 1fr;
+  }
+
+  .services-showcase-card-featured {
+    min-height: 0;
+  }
+
+  .services-showcase-card-featured .services-showcase-content {
+    min-height: 0;
+    padding: 30px 22px;
+  }
+
+  .services-group-heading h3 {
+    font-size: 1.55rem;
+  }
+}
+
+/* ==========================================================
+   ESPACEMENT ENTRE LA GRANDE CARTE A ET LA SECTION B
+========================================================== */
+
+.services-group-b {
+  margin-top: 65px;
+}
+
+@media (max-width: 700px) {
+  .services-group-b {
+    margin-top: 40px;
+  }
+}
