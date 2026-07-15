@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -23,6 +24,9 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
 
+  /*
+   * Afficher ou masquer le header selon le scroll.
+   */
   useEffect(() => {
     previousScrollRef.current = window.scrollY;
 
@@ -54,11 +58,17 @@ export default function Header() {
     };
   }, []);
 
+  /*
+   * Fermer le menu mobile après un changement de page.
+   */
   useEffect(() => {
     setMenuOpen(false);
     setHidden(false);
   }, [pathname]);
 
+  /*
+   * Bloquer le scroll de la page lorsque le menu mobile est ouvert.
+   */
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
     const previousHtmlOverflow =
@@ -79,6 +89,9 @@ export default function Header() {
     };
   }, [menuOpen]);
 
+  /*
+   * Fermer le menu avec la touche Échap.
+   */
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -93,12 +106,30 @@ export default function Header() {
     };
   }, []);
 
+  /*
+   * Vérifier si le lien correspond à la page active.
+   */
   const isActive = (href: string) => {
     if (href === "/") {
       return pathname === "/";
     }
 
     return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  /*
+   * Action lors du clic sur le logo.
+   */
+  const handleLogoClick = () => {
+    setMenuOpen(false);
+    setHidden(false);
+
+    if (pathname === "/") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
@@ -139,10 +170,13 @@ export default function Header() {
 
         {/* Navigation principale */}
         <div className="container header-main">
+          {/* Logo : redirection vers Accueil */}
           <Link
             href="/"
+            scroll
             className="brand"
-            aria-label="Accueil Farre Service"
+            aria-label="Retour à l’accueil"
+            onClick={handleLogoClick}
           >
             <span className="brand-logo">
               <Image
@@ -160,6 +194,7 @@ export default function Header() {
             </span>
           </Link>
 
+          {/* Navigation ordinateur */}
           <nav
             className="desktop-nav"
             aria-label="Navigation principale"
@@ -182,10 +217,12 @@ export default function Header() {
             })}
           </nav>
 
+          {/* Bouton devis */}
           <Link href="/contact" className="header-cta">
             Demander un devis
           </Link>
 
+          {/* Bouton menu mobile */}
           <button
             type="button"
             className="mobile-menu-button"
