@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,7 +20,16 @@ import {
   getProjectImageUrl,
   getProjects,
   toBoolean,
+  type Project,
 } from "../../lib/api/projects";
+
+/*
+ * Cette page doit toujours charger les projets
+ * les plus récents depuis Express/MySQL.
+ */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export const metadata: Metadata = {
   title: "Portfolio",
@@ -27,18 +37,215 @@ export const metadata: Metadata = {
     "Découvrez les principales réalisations maritimes, portuaires, hydrauliques, industrielles et sous-marines de Farre Service.",
 };
 
+/**
+ * Nettoie une chaîne provenant de l’API.
+ */
+function getSafeText(
+  value: string | null | undefined,
+  defaultValue = ""
+): string {
+  if (typeof value !== "string") {
+    return defaultValue;
+  }
+
+  const cleanedValue = value.trim();
+
+  return cleanedValue || defaultValue;
+}
+
+/**
+ * Retourne un identifiant React stable.
+ */
+function getProjectKey(
+  project: Project,
+  index: number
+): string {
+  const projectId = Number(project.id);
+
+  if (
+    Number.isInteger(projectId) &&
+    projectId > 0
+  ) {
+    return `project-${projectId}`;
+  }
+
+  return `project-${index}`;
+}
+
+/**
+ * Vérifie si l’image provient du backend Express.
+ *
+ * Les images Express utilisent /uploads/...
+ */
+function isBackendImage(
+  imageUrl: string
+): boolean {
+  return (
+    imageUrl.includes("/uploads/") ||
+    imageUrl.startsWith("http://") ||
+    imageUrl.startsWith("https://")
+  );
+}
+
+/**
+ * Carte d’un projet.
+ */
+function ProjectCard({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
+  const title = getSafeText(
+    project.title,
+    "Réalisation Farre Service"
+  );
+
+  const category = getSafeText(
+    project.category,
+    "Projet"
+  );
+
+  const location = getSafeText(
+    project.location
+  );
+
+  const description = getSafeText(
+    project.description
+  );
+
+  const wide = toBoolean(project.isWide);
+  const tall = toBoolean(project.isTall);
+
+  const imageUrl = getProjectImageUrl(
+    project.image
+  );
+
+  const itemClasses = [
+    "portfolio-premium-item",
+    wide
+      ? "portfolio-premium-item-wide"
+      : "",
+    tall
+      ? "portfolio-premium-item-tall"
+      : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const imageAlt = location
+    ? `${title} — ${location}`
+    : `${title} — Farre Service`;
+
+  return (
+    <Reveal
+      delay={(index % 3) * 0.06}
+      className={itemClasses}
+    >
+      <article
+        className="portfolio-premium-card"
+        style={{
+          position: "relative",
+          height: "100%",
+          minHeight: tall
+            ? "520px"
+            : "390px",
+          overflow: "hidden",
+        }}
+      >
+        <Image
+          src={imageUrl}
+          alt={imageAlt}
+          fill
+          unoptimized={isBackendImage(imageUrl)}
+          sizes={
+            wide
+              ? "(max-width: 900px) 100vw, 66vw"
+              : "(max-width: 900px) 100vw, 33vw"
+          }
+          style={{
+            objectFit: "cover",
+          }}
+        />
+
+        <div className="portfolio-premium-overlay" />
+        <div className="portfolio-premium-gradient" />
+
+        <span className="portfolio-premium-number">
+          {String(index + 1).padStart(2, "0")}
+        </span>
+
+        <div className="portfolio-premium-content">
+          <span className="portfolio-premium-category">
+            {category}
+          </span>
+
+          <h3>{title}</h3>
+
+          {description && (
+            <p className="portfolio-project-description">
+              {description}
+            </p>
+          )}
+
+          {location && (
+            <p className="portfolio-premium-location">
+              <MapPin
+                size={18}
+                aria-hidden="true"
+              />
+
+              <span>{location}</span>
+            </p>
+          )}
+        </div>
+      </article>
+    </Reveal>
+  );
+}
+
 export default async function PortfolioPage() {
   /*
-   * Les données sont maintenant chargées depuis :
-   * Next.js -> Express -> MySQL
+   * Chargement :
+   *
+   * Next.js
+   *    ↓
+   * Express /api/projects
+   *    ↓
+   * MySQL projects
    */
-  const projects = await getProjects();
+  const receivedProjects =
+    await getProjects();
 
-  const numberOfCategories = new Set(
+  /*
+   * Protection supplémentaire :
+   * getProjects retourne normalement toujours
+   * un tableau, mais on vérifie quand même.
+   */
+  const projects: Project[] =
+    Array.isArray(receivedProjects)
+      ? receivedProjects
+      : [];
+
+  /*
+   * Calcul des catégories sans doublons.
+   * La casse est ignorée :
+   *
+   * "Inspection" et "inspection"
+   * sont considérées comme la même catégorie.
+   */
+  const categories = new Set(
     projects
-      .map((project) => project.category)
+      .map((project) =>
+        getSafeText(project.category)
+          .toLocaleLowerCase("fr")
+      )
       .filter(Boolean)
-  ).size;
+  );
+
+  const numberOfCategories =
+    categories.size;
 
   const statistics = [
     {
@@ -63,6 +270,8 @@ export default async function PortfolioPage() {
 
   return (
     <>
+      {/* En-tête de la page */}
+
       <PageHero
         title="Notre portfolio"
         description="Découvrez en images quelques travaux et interventions réalisés par les équipes de Farre Service."
@@ -73,49 +282,67 @@ export default async function PortfolioPage() {
       {/* Introduction */}
 
       <section className="portfolio-premium-intro">
-        <div className="portfolio-premium-pattern" />
+        <div
+          className="portfolio-premium-pattern"
+          aria-hidden="true"
+        />
 
         <div className="container portfolio-premium-intro-grid">
           <Reveal className="portfolio-premium-intro-content">
             <span className="portfolio-premium-label">
-              <Camera size={15} />
+              <Camera
+                size={15}
+                aria-hidden="true"
+              />
+
               Réalisations terrain
             </span>
 
             <h2>
-              Une expertise visible à travers des projets
-              concrets
+              Une expertise visible à travers
+              des projets concrets
             </h2>
 
             <p>
-              Découvrez une sélection d’interventions menées
-              par Farre Service dans les domaines maritimes,
-              portuaires, hydrauliques, industriels et
+              Découvrez une sélection
+              d’interventions menées par Farre
+              Service dans les domaines
+              maritimes, portuaires,
+              hydrauliques, industriels et
               sous-marins.
             </p>
 
             <div className="portfolio-premium-checks">
               <div>
-                <CheckCircle2 />
+                <CheckCircle2
+                  aria-hidden="true"
+                />
 
                 <span>
-                  Interventions sur des sites complexes
+                  Interventions sur des sites
+                  complexes
                 </span>
               </div>
 
               <div>
-                <CheckCircle2 />
+                <CheckCircle2
+                  aria-hidden="true"
+                />
 
                 <span>
-                  Équipes techniques spécialisées
+                  Équipes techniques
+                  spécialisées
                 </span>
               </div>
 
               <div>
-                <CheckCircle2 />
+                <CheckCircle2
+                  aria-hidden="true"
+                />
 
                 <span>
-                  Moyens adaptés à chaque environnement
+                  Moyens adaptés à chaque
+                  environnement
                 </span>
               </div>
             </div>
@@ -125,7 +352,11 @@ export default async function PortfolioPage() {
               className="button button-primary button-lg"
             >
               Étudier votre projet
-              <ArrowRight size={18} />
+
+              <ArrowRight
+                size={18}
+                aria-hidden="true"
+              />
             </Link>
           </Reveal>
 
@@ -173,7 +404,7 @@ export default async function PortfolioPage() {
             </div>
 
             <div className="portfolio-premium-floating-card">
-              <HardHat />
+              <HardHat aria-hidden="true" />
 
               <div>
                 <strong>
@@ -181,7 +412,8 @@ export default async function PortfolioPage() {
                 </strong>
 
                 <span>
-                  Sur terre, en port et sous l’eau
+                  Sur terre, en port et sous
+                  l’eau
                 </span>
               </div>
             </div>
@@ -193,36 +425,49 @@ export default async function PortfolioPage() {
 
       <section className="portfolio-premium-stats">
         <div className="container portfolio-premium-stats-grid">
-          {statistics.map((item, index) => {
-            const Icon = item.icon;
+          {statistics.map(
+            (item, index) => {
+              const Icon = item.icon;
 
-            return (
-              <Reveal
-                key={item.title}
-                delay={index * 0.08}
-              >
-                <article className="portfolio-premium-stat-card">
-                  <div className="portfolio-premium-stat-icon">
-                    <Icon />
-                  </div>
+              return (
+                <Reveal
+                  key={item.title}
+                  delay={index * 0.08}
+                >
+                  <article className="portfolio-premium-stat-card">
+                    <div className="portfolio-premium-stat-icon">
+                      <Icon aria-hidden="true" />
+                    </div>
 
-                  <div>
-                    <strong>{item.value}</strong>
-                    <h3>{item.title}</h3>
-                    <p>{item.text}</p>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
+                    <div>
+                      <strong>
+                        {item.value}
+                      </strong>
+
+                      <h3>{item.title}</h3>
+
+                      <p>{item.text}</p>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            }
+          )}
         </div>
       </section>
 
       {/* Galerie dynamique */}
 
       <section className="portfolio-gallery-section">
-        <div className="portfolio-gallery-glow portfolio-gallery-glow-one" />
-        <div className="portfolio-gallery-glow portfolio-gallery-glow-two" />
+        <div
+          className="portfolio-gallery-glow portfolio-gallery-glow-one"
+          aria-hidden="true"
+        />
+
+        <div
+          className="portfolio-gallery-glow portfolio-gallery-glow-two"
+          aria-hidden="true"
+        />
 
         <div className="container">
           <Reveal className="portfolio-gallery-heading">
@@ -232,126 +477,52 @@ export default async function PortfolioPage() {
               </span>
 
               <h2>
-                Des réalisations dans des environnements
-                exigeants
+                Des réalisations dans des
+                environnements exigeants
               </h2>
             </div>
 
             <p>
-              Inspection, maintenance, soudure, nettoyage,
-              installation de conduites, travaux portuaires
-              et opérations offshore.
+              Inspection, maintenance, soudure,
+              nettoyage, installation de
+              conduites, travaux portuaires et
+              opérations offshore.
             </p>
           </Reveal>
 
           {projects.length === 0 ? (
-            <div className="portfolio-empty-state">
-              <Camera size={45} />
+            <div
+              className="portfolio-empty-state"
+              role="status"
+            >
+              <Camera
+                size={45}
+                aria-hidden="true"
+              />
 
               <h3>
                 Aucune réalisation disponible
               </h3>
 
               <p>
-                Ajoutez des travaux depuis la page
-                d’administration.
+                Aucun projet actif n’est
+                actuellement disponible.
               </p>
             </div>
           ) : (
             <div className="portfolio-premium-grid">
-              {projects.map((project, index) => {
-                const wide = toBoolean(
-                  project.isWide
-                );
-
-                const tall = toBoolean(
-                  project.isTall
-                );
-
-                const imageUrl =
-                  getProjectImageUrl(project.image);
-
-                return (
-                  <Reveal
-                    key={project.id}
-                    delay={(index % 3) * 0.06}
-                    className={[
-                      "portfolio-premium-item",
-                      wide
-                        ? "portfolio-premium-item-wide"
-                        : "",
-                      tall
-                        ? "portfolio-premium-item-tall"
-                        : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
-                    <article
-                      className="portfolio-premium-card"
-                      style={{
-                        position: "relative",
-                        height: "100%",
-                        minHeight: tall
-                          ? "520px"
-                          : "390px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Image
-                        src={imageUrl}
-                        alt={`${project.title} — ${
-                          project.location ||
-                          "Farre Service"
-                        }`}
-                        fill
-                        sizes={
-                          wide
-                            ? "(max-width: 900px) 100vw, 66vw"
-                            : "(max-width: 900px) 100vw, 33vw"
-                        }
-                        style={{
-                          objectFit: "cover",
-                        }}
-                      />
-
-                      <div className="portfolio-premium-overlay" />
-                      <div className="portfolio-premium-gradient" />
-
-                      <span className="portfolio-premium-number">
-                        {String(index + 1).padStart(
-                          2,
-                          "0"
-                        )}
-                      </span>
-
-                      <div className="portfolio-premium-content">
-                        <span className="portfolio-premium-category">
-                          {project.category}
-                        </span>
-
-                        <h3>{project.title}</h3>
-
-                        {project.description && (
-                          <p className="portfolio-project-description">
-                            {project.description}
-                          </p>
-                        )}
-
-                        {project.location && (
-                          <p className="portfolio-premium-location">
-                            <MapPin />
-
-                            <span>
-                              {project.location}
-                            </span>
-                          </p>
-                        )}
-                      </div>
-                    </article>
-                  </Reveal>
-                );
-              })}
+              {projects.map(
+                (project, index) => (
+                  <ProjectCard
+                    key={getProjectKey(
+                      project,
+                      index
+                    )}
+                    project={project}
+                    index={index}
+                  />
+                )
+              )}
             </div>
           )}
         </div>
@@ -378,8 +549,15 @@ export default async function PortfolioPage() {
           }}
         />
 
-        <div className="portfolio-final-cta-overlay" />
-        <div className="portfolio-final-cta-grid" />
+        <div
+          className="portfolio-final-cta-overlay"
+          aria-hidden="true"
+        />
+
+        <div
+          className="portfolio-final-cta-grid"
+          aria-hidden="true"
+        />
 
         <div className="container portfolio-final-cta-content">
           <Reveal>
@@ -388,14 +566,15 @@ export default async function PortfolioPage() {
             </span>
 
             <h2>
-              Besoin d’une équipe pour un projet
-              spécialisé ?
+              Besoin d’une équipe pour un
+              projet spécialisé ?
             </h2>
 
             <p>
-              Décrivez-nous votre besoin ainsi que les
-              caractéristiques de votre site. Notre équipe
-              vous proposera une solution adaptée.
+              Décrivez-nous votre besoin ainsi
+              que les caractéristiques de votre
+              site. Notre équipe vous proposera
+              une solution adaptée.
             </p>
           </Reveal>
 
@@ -408,15 +587,23 @@ export default async function PortfolioPage() {
               className="button button-primary button-lg"
             >
               Parler à notre équipe
-              <ArrowRight size={19} />
+
+              <ArrowRight
+                size={19}
+                aria-hidden="true"
+              />
             </Link>
 
             <a
               href="tel:+213660952397"
               className="portfolio-final-cta-phone"
+              aria-label="Appeler Farre Service au 0660 952 397"
             >
               <span>Contact direct</span>
-              <strong>0660 952 397</strong>
+
+              <strong>
+                0660 952 397
+              </strong>
             </a>
           </Reveal>
         </div>
@@ -424,3 +611,4 @@ export default async function PortfolioPage() {
     </>
   );
 }
+

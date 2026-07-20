@@ -1,8 +1,10 @@
 "use client";
 
 import {
+  AlertCircle,
   CheckCircle2,
   Clock3,
+  Loader2,
   Mail,
   MapPin,
   Phone,
@@ -13,6 +15,9 @@ import { FormEvent, useState } from "react";
 import Reveal from "../components/Reveal";
 import PageHero from "../components/PageHero";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:5000";
 
 const details = [
   {
@@ -39,13 +44,87 @@ const details = [
   },
 ];
 
+interface ContactResponse {
+  success: boolean;
+  message?: string;
+  data?: { id: number };
+}
+
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
-    setSent(true);
-  };
+
+    setLoading(true);
+    setSent(false);
+    setError("");
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const name = String(formData.get("name") || "").trim();
+    const company = String(formData.get("company") || "").trim();
+    const email = String(formData.get("email") || "")
+      .trim()
+      .toLowerCase();
+    const phone = String(formData.get("phone") || "").trim();
+    const service = String(formData.get("service") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+
+    if (!name || !email || !phone || !service || !message) {
+      setError(
+        "Veuillez remplir tous les champs obligatoires."
+      );
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_URL}/api/contact-requests`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            company,
+            email,
+            phone,
+            service,
+            message,
+          }),
+        }
+      );
+
+      const result: ContactResponse = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.message ||
+            "Impossible d’envoyer la demande."
+        );
+      }
+
+      form.reset();
+      setSent(true);
+    } catch (exception) {
+      setError(
+        exception instanceof Error
+          ? exception.message
+          : "Impossible d’envoyer la demande."
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -66,8 +145,9 @@ export default function ContactPage() {
             </h2>
 
             <p className="section-description">
-              Pour une demande de devis, une collaboration ou des informations
-              complémentaires, contactez-nous par téléphone ou e-mail.
+              Pour une demande de devis, une collaboration ou des
+              informations complémentaires, contactez-nous par
+              téléphone ou e-mail.
             </p>
 
             <div className="contact-details">
@@ -103,8 +183,8 @@ export default function ContactPage() {
               <div>
                 <strong>Intervention technique urgente</strong>
                 <p>
-                  Pour une demande urgente, contactez-nous directement par
-                  téléphone.
+                  Pour une demande urgente, contactez-nous
+                  directement par téléphone.
                 </p>
               </div>
             </div>
@@ -118,7 +198,14 @@ export default function ContactPage() {
             {sent && (
               <div className="form-success">
                 <CheckCircle2 />
-                Votre demande a été enregistrée dans l’interface.
+                Votre demande a été envoyée avec succès.
+              </div>
+            )}
+
+            {error && (
+              <div className="form-error">
+                <AlertCircle />
+                {error}
               </div>
             )}
 
@@ -131,6 +218,7 @@ export default function ContactPage() {
                     name="name"
                     placeholder="Votre nom"
                     required
+                    disabled={loading}
                   />
                 </label>
 
@@ -140,6 +228,7 @@ export default function ContactPage() {
                     type="text"
                     name="company"
                     placeholder="Nom de l’entreprise"
+                    disabled={loading}
                   />
                 </label>
               </div>
@@ -152,6 +241,7 @@ export default function ContactPage() {
                     name="email"
                     placeholder="votre@email.com"
                     required
+                    disabled={loading}
                   />
                 </label>
 
@@ -162,6 +252,7 @@ export default function ContactPage() {
                     name="phone"
                     placeholder="Votre numéro"
                     required
+                    disabled={loading}
                   />
                 </label>
               </div>
@@ -169,16 +260,33 @@ export default function ContactPage() {
               <label>
                 <span>Service demandé</span>
 
-                <select name="service" defaultValue="" required>
+                <select
+                  name="service"
+                  defaultValue=""
+                  required
+                  disabled={loading}
+                >
                   <option value="" disabled>
                     Sélectionnez un service
                   </option>
-                  <option value="inspection">Inspection sous-marine</option>
-                  <option value="maintenance">Maintenance et nettoyage</option>
-                  <option value="soudure">Soudure et découpage</option>
-                  <option value="hydraulique">Travaux hydrauliques</option>
-                  <option value="portuaire">Travaux portuaires</option>
-                  <option value="assistance">Assistance technique</option>
+                  <option value="inspection">
+                    Inspection sous-marine
+                  </option>
+                  <option value="maintenance">
+                    Maintenance et nettoyage
+                  </option>
+                  <option value="soudure">
+                    Soudure et découpage
+                  </option>
+                  <option value="hydraulique">
+                    Travaux hydrauliques
+                  </option>
+                  <option value="portuaire">
+                    Travaux portuaires
+                  </option>
+                  <option value="assistance">
+                    Assistance technique
+                  </option>
                 </select>
               </label>
 
@@ -190,12 +298,26 @@ export default function ContactPage() {
                   rows={7}
                   placeholder="Décrivez le site, le lieu et le type d’intervention..."
                   required
+                  disabled={loading}
                 />
               </label>
 
-              <button type="submit" className="button button-primary form-button">
-                Envoyer la demande
-                <Send size={18} />
+              <button
+                type="submit"
+                className="button button-primary form-button"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    Envoi en cours
+                    <Loader2 size={18} className="admin-spin" />
+                  </>
+                ) : (
+                  <>
+                    Envoyer la demande
+                    <Send size={18} />
+                  </>
+                )}
               </button>
             </form>
           </Reveal>
@@ -208,7 +330,9 @@ export default function ContactPage() {
 
           <div>
             <strong>EURL Farre Service</strong>
-            <span>Lot N°32 Hai Belgaid, Bir El Djir, Oran 31000</span>
+            <span>
+              Lot N°32 Hai Belgaid, Bir El Djir, Oran 31000
+            </span>
           </div>
 
           <a

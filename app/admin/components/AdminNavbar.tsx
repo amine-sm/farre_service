@@ -11,6 +11,7 @@ import {
 import {
   ExternalLink,
   FolderKanban,
+  Inbox,
   LayoutDashboard,
   Loader2,
   LogOut,
@@ -39,16 +40,16 @@ interface AdminMenuItem {
 }
 
 const menuItems: AdminMenuItem[] = [
-  {
-    label: "Tableau de bord",
-    href: "/admin",
-    icon: LayoutDashboard,
-    exact: true,
-  },
+ 
   {
     label: "Travaux",
     href: "/admin/admin-acces",
     icon: FolderKanban,
+  },
+  {
+    label: "Demandes",
+    href: "/admin/demandes",
+    icon: Inbox,
   },
   {
     label: "Paramètres",
@@ -216,7 +217,7 @@ export default function AdminNavbar() {
 
             <div className="admin-nav-mobile-actions">
               <Link
-                href="/portfolio"
+                href="/"
                 target="_blank"
                 className="admin-mobile-site"
                 onClick={() =>
@@ -256,7 +257,7 @@ export default function AdminNavbar() {
 
           <div className="admin-topbar-actions">
             <Link
-              href="/portfolio"
+              href="/"
               target="_blank"
               className="admin-view-site"
             >
@@ -289,7 +290,6 @@ export default function AdminNavbar() {
               </span>
             </button>
 
-            {/* Bouton desktop de déconnexion */}
             <button
               type="button"
               className="admin-desktop-logout"

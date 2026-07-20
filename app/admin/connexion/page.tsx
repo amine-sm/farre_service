@@ -2,10 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-import {
-  useRouter,
-} from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   AlertCircle,
@@ -67,8 +64,11 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
+      const loginUrl =
+        `${API_URL}/api/auth/login`;
+
       const response = await fetch(
-        `${API_URL}/api/auth/login`,
+        loginUrl,
         {
           method: "POST",
           credentials: "include",
@@ -86,8 +86,40 @@ export default function AdminLoginPage() {
         }
       );
 
-      const result: LoginResponse =
-        await response.json();
+      const contentType =
+        response.headers.get(
+          "content-type"
+        ) || "";
+
+      const responseText =
+        await response.text();
+
+      if (
+        !contentType.includes(
+          "application/json"
+        )
+      ) {
+        console.error(
+          "Réponse serveur non JSON :",
+          responseText
+        );
+
+        throw new Error(
+          `Le serveur Express a retourné une réponse invalide (${response.status}). Vérifiez la route /api/auth/login.`
+        );
+      }
+
+      let result: LoginResponse;
+
+      try {
+        result = JSON.parse(
+          responseText
+        ) as LoginResponse;
+      } catch {
+        throw new Error(
+          "La réponse JSON du serveur est invalide."
+        );
+      }
 
       if (
         !response.ok ||
@@ -105,6 +137,11 @@ export default function AdminLoginPage() {
 
       router.refresh();
     } catch (exception) {
+      console.error(
+        "Erreur de connexion :",
+        exception
+      );
+
       setError(
         exception instanceof Error
           ? exception.message

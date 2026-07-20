@@ -395,10 +395,9 @@ export default function AdminAccesPage() {
             </p>
           </div>
 
-          <div className="admin-page-status">
-            <span className="admin-status-dot" />
-            API connectée
-          </div>
+
+
+  
         </section>
 
         <section className="admin-stat-grid">
