@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Manrope } from "next/font/google";
 
-import Footer from "./components/Footer";
-import Header from "./components/Header";
-import ScrollProgress from "./components/ScrollProgress";
-import WhatsAppButton from "./components/WhatsAppButton";
+import ApplicationLayout from "./components/ApplicationLayout";
 
 import "./globals.css";
 
@@ -94,17 +91,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" data-scroll-behavior="smooth">
-      <body className={`${inter.variable} ${manrope.variable}`}>
-        <ScrollProgress />
-
-        <Header />
-
-        <main>{children}</main>
-
-        <Footer />
-
-        <WhatsAppButton />
+    <html
+      lang="fr"
+      data-scroll-behavior="smooth"
+    >
+      <body
+        className={`${inter.variable} ${manrope.variable}`}
+      >
+        <ApplicationLayout>
+          {children}
+        </ApplicationLayout>
       </body>
     </html>
   );

@@ -2,7 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    formats: ["image/avif", "image/webp"],
+    dangerouslyAllowLocalIP: true,
+
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "5000",
+        pathname: "/uploads/**",
+      },
+    ],
   },
 };
 
