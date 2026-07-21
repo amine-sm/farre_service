@@ -36,6 +36,12 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:5000";
 
+const REQUEST_REFRESH_INTERVAL =
+  2000;
+
+const CONTACT_REQUEST_EVENT =
+  "farre-contact-requests-updated";
+
 interface ContactRequest {
   id: number;
   name: string;
@@ -202,6 +208,11 @@ export default function AdminDemandesPage() {
     useState(true);
 
   const [
+    autoRefreshing,
+    setAutoRefreshing,
+  ] = useState(false);
+
+  const [
     deletingId,
     setDeletingId,
   ] = useState<number | null>(null);
@@ -275,11 +286,19 @@ export default function AdminDemandesPage() {
   }
 
   const loadRequests =
-    useCallback(async () => {
-      setLoading(true);
-      setError("");
+    useCallback(
+      async (
+        silent = false
+      ) => {
+        if (silent) {
+          setAutoRefreshing(true);
+        } else {
+          setLoading(true);
+        }
 
-      try {
+        setError("");
+
+        try {
         const response = await fetch(
           `${API_URL}/api/contact-requests`,
           {
@@ -338,19 +357,56 @@ export default function AdminDemandesPage() {
             );
           }
         );
-      } catch (exception) {
-        setError(
-          exception instanceof Error
-            ? exception.message
-            : "Impossible de charger les demandes."
-        );
-      } finally {
-        setLoading(false);
-      }
-    }, [router]);
+        } catch (exception) {
+          if (!silent) {
+            setError(
+              exception instanceof Error
+                ? exception.message
+                : "Impossible de charger les demandes."
+            );
+          }
+        } finally {
+          if (silent) {
+            setAutoRefreshing(false);
+          } else {
+            setLoading(false);
+          }
+        }
+      },
+      [router]
+    );
 
   useEffect(() => {
-    loadRequests();
+    loadRequests(false);
+
+    const intervalId =
+      window.setInterval(
+        () => {
+          loadRequests(true);
+        },
+        REQUEST_REFRESH_INTERVAL
+      );
+
+    const handleContactRequestUpdate =
+      () => {
+        loadRequests(true);
+      };
+
+    window.addEventListener(
+      CONTACT_REQUEST_EVENT,
+      handleContactRequestUpdate
+    );
+
+    return () => {
+      window.clearInterval(
+        intervalId
+      );
+
+      window.removeEventListener(
+        CONTACT_REQUEST_EVENT,
+        handleContactRequestUpdate
+      );
+    };
   }, [loadRequests]);
 
   const dateFilteredRequests =
@@ -642,6 +698,23 @@ export default function AdminDemandesPage() {
     totalPages,
   ]);
 
+  function notifyContactRequestsUpdated() {
+    window.dispatchEvent(
+      new Event(
+        CONTACT_REQUEST_EVENT
+      )
+    );
+
+    try {
+      localStorage.setItem(
+        CONTACT_REQUEST_EVENT,
+        String(Date.now())
+      );
+    } catch {
+      // Le stockage local peut être indisponible.
+    }
+  }
+
   async function updateReadStatus(
     request: ContactRequest,
     isRead: boolean
@@ -725,6 +798,8 @@ export default function AdminDemandesPage() {
             ? "Demande marquée comme lue."
             : "Demande marquée comme non lue.")
       );
+
+      notifyContactRequestsUpdated();
     } catch (exception) {
       setError(
         exception instanceof Error
@@ -823,6 +898,8 @@ export default function AdminDemandesPage() {
         result.message ||
           "Demande supprimée avec succès."
       );
+
+      notifyContactRequestsUpdated();
     } catch (exception) {
       setError(
         exception instanceof Error
@@ -940,21 +1017,27 @@ EURL Farre Service`
           <button
             type="button"
             className="admin-settings-refresh"
-            onClick={
-              loadRequests
+            onClick={() =>
+              loadRequests(false)
             }
-            disabled={loading}
+            disabled={
+              loading ||
+              autoRefreshing
+            }
           >
             <RefreshCw
               size={17}
               className={
-                loading
+                loading ||
+                autoRefreshing
                   ? "admin-spin"
                   : ""
               }
             />
 
-            Actualiser
+            {autoRefreshing
+              ? "Synchronisation..."
+              : "Actualiser"}
           </button>
         </section>
 

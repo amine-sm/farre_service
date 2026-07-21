@@ -12,7 +12,6 @@ import {
   ExternalLink,
   FolderKanban,
   Inbox,
-  LayoutDashboard,
   Loader2,
   LogOut,
   Menu,
@@ -21,11 +20,21 @@ import {
   X,
 } from "lucide-react";
 
-import { useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:5000";
+
+const REQUEST_COUNT_INTERVAL =
+  2000;
+
+const CONTACT_REQUEST_EVENT =
+  "farre-contact-requests-updated";
 
 interface AdminMenuItem {
   label: string;
@@ -37,10 +46,17 @@ interface AdminMenuItem {
   }>;
 
   exact?: boolean;
+  showUnreadCount?: boolean;
+}
+
+interface UnreadCountResponse {
+  success: boolean;
+  data?: {
+    unreadCount: number;
+  };
 }
 
 const menuItems: AdminMenuItem[] = [
- 
   {
     label: "Travaux",
     href: "/admin/admin-acces",
@@ -50,6 +66,7 @@ const menuItems: AdminMenuItem[] = [
     label: "Demandes",
     href: "/admin/demandes",
     icon: Inbox,
+    showUnreadCount: true,
   },
   {
     label: "Paramètres",
@@ -68,11 +85,18 @@ export default function AdminNavbar() {
   const [loggingOut, setLoggingOut] =
     useState(false);
 
+  const [
+    unreadCount,
+    setUnreadCount,
+  ] = useState(0);
+
   function isActive(
     item: AdminMenuItem
   ) {
     if (item.exact) {
-      return pathname === item.href;
+      return (
+        pathname === item.href
+      );
     }
 
     return (
@@ -83,6 +107,116 @@ export default function AdminNavbar() {
     );
   }
 
+  const loadUnreadCount =
+    useCallback(async () => {
+      try {
+        const response =
+          await fetch(
+            `${API_URL}/api/contact-requests/unread-count`,
+            {
+              method: "GET",
+              credentials:
+                "include",
+              cache: "no-store",
+
+              headers: {
+                Accept:
+                  "application/json",
+              },
+            }
+          );
+
+        if (
+          response.status === 401
+        ) {
+          return;
+        }
+
+        const result:
+          UnreadCountResponse =
+          await response.json();
+
+        if (
+          !response.ok ||
+          !result.success
+        ) {
+          return;
+        }
+
+        setUnreadCount(
+          Number(
+            result.data
+              ?.unreadCount || 0
+          )
+        );
+      } catch (error) {
+        console.error(
+          "Erreur compteur demandes :",
+          error
+        );
+      }
+    }, []);
+
+  useEffect(() => {
+    loadUnreadCount();
+
+    const intervalId =
+      window.setInterval(
+        loadUnreadCount,
+        REQUEST_COUNT_INTERVAL
+      );
+
+    const handleContactRequestUpdate =
+      () => {
+        loadUnreadCount();
+      };
+
+    const handleStorage =
+      (
+        event: StorageEvent
+      ) => {
+        if (
+          event.key ===
+          CONTACT_REQUEST_EVENT
+        ) {
+          loadUnreadCount();
+        }
+      };
+
+    window.addEventListener(
+      CONTACT_REQUEST_EVENT,
+      handleContactRequestUpdate
+    );
+
+    window.addEventListener(
+      "storage",
+      handleStorage
+    );
+
+    return () => {
+      window.clearInterval(
+        intervalId
+      );
+
+      window.removeEventListener(
+        CONTACT_REQUEST_EVENT,
+        handleContactRequestUpdate
+      );
+
+      window.removeEventListener(
+        "storage",
+        handleStorage
+      );
+    };
+  }, [loadUnreadCount]);
+
+  useEffect(() => {
+    loadUnreadCount();
+  }, [
+    pathname,
+    loadUnreadCount,
+  ]);
+
   async function logout() {
     if (loggingOut) {
       return;
@@ -91,22 +225,25 @@ export default function AdminNavbar() {
     setLoggingOut(true);
 
     try {
-      const response = await fetch(
-        `${API_URL}/api/auth/logout`,
-        {
-          method: "POST",
-          credentials: "include",
+      const response =
+        await fetch(
+          `${API_URL}/api/auth/logout`,
+          {
+            method: "POST",
+            credentials:
+              "include",
 
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
+            headers: {
+              Accept:
+                "application/json",
+            },
+          }
+        );
 
       const result =
-        await response.json().catch(
-          () => null
-        );
+        await response
+          .json()
+          .catch(() => null);
 
       if (
         !response.ok ||
@@ -197,9 +334,7 @@ export default function AdminNavbar() {
                         : ""
                     }`}
                     onClick={() =>
-                      setMenuOpen(
-                        false
-                      )
+                      setMenuOpen(false)
                     }
                   >
                     <Icon
@@ -210,6 +345,17 @@ export default function AdminNavbar() {
                     <span>
                       {item.label}
                     </span>
+
+                    {item.showUnreadCount &&
+                      unreadCount >
+                        0 && (
+                        <span className="admin-nav-count">
+                          {unreadCount >
+                          99
+                            ? "99+"
+                            : unreadCount}
+                        </span>
+                      )}
                   </Link>
                 );
               }
@@ -303,7 +449,9 @@ export default function AdminNavbar() {
                   className="admin-spin"
                 />
               ) : (
-                <LogOut size={17} />
+                <LogOut
+                  size={17}
+                />
               )}
 
               <span>
@@ -318,10 +466,13 @@ export default function AdminNavbar() {
               className="admin-menu-toggle"
               onClick={() =>
                 setMenuOpen(
-                  (value) => !value
+                  (value) =>
+                    !value
                 )
               }
-              aria-expanded={menuOpen}
+              aria-expanded={
+                menuOpen
+              }
               aria-label={
                 menuOpen
                   ? "Fermer le menu"
@@ -331,7 +482,9 @@ export default function AdminNavbar() {
               {menuOpen ? (
                 <X size={23} />
               ) : (
-                <Menu size={23} />
+                <Menu
+                  size={23}
+                />
               )}
             </button>
           </div>

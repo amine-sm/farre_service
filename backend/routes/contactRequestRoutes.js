@@ -3,22 +3,44 @@ const express = require("express");
 const {
   createContactRequest,
   getContactRequests,
+  getUnreadContactRequestsCount,
   getContactRequestById,
   updateContactRequestReadStatus,
   deleteContactRequest,
-} = require("../controllers/contactRequestController");
+} = require(
+  "../controllers/contactRequestController"
+);
 
 const {
   requireAdmin,
-} = require("../middleware/authMiddleware");
+} = require(
+  "../middleware/authMiddleware"
+);
 
 const router = express.Router();
 
-router.post("/", createContactRequest);
+router.post(
+  "/",
+  createContactRequest
+);
 
-router.get("/", requireAdmin, getContactRequests);
+router.get(
+  "/",
+  requireAdmin,
+  getContactRequests
+);
 
-router.get("/:id", requireAdmin, getContactRequestById);
+router.get(
+  "/unread-count",
+  requireAdmin,
+  getUnreadContactRequestsCount
+);
+
+router.get(
+  "/:id",
+  requireAdmin,
+  getContactRequestById
+);
 
 router.patch(
   "/:id/read",
