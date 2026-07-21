@@ -19,6 +19,7 @@ import {
 
 import {
   FormEvent,
+  useEffect,
   useState,
 } from "react";
 
@@ -55,32 +56,59 @@ export default function AdminLoginPage() {
   const [error, setError] =
     useState("");
 
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setError("");
+    }, 7000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [error]);
+
   async function handleLogin(
     event: FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
 
+    if (loading) {
+      return;
+    }
+
     setError("");
+
+    const normalizedEmail = email
+      .trim()
+      .toLowerCase();
+
+    if (!normalizedEmail || !password) {
+      setError(
+        "Veuillez saisir votre adresse email et votre mot de passe."
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const loginUrl =
-        `${API_URL}/api/auth/login`;
-
       const response = await fetch(
-        loginUrl,
+        `${API_URL}/api/auth/login`,
         {
           method: "POST",
           credentials: "include",
+          cache: "no-store",
           headers: {
             "Content-Type":
               "application/json",
-            Accept: "application/json",
+            Accept:
+              "application/json",
           },
           body: JSON.stringify({
-            email: email
-              .trim()
-              .toLowerCase(),
+            email: normalizedEmail,
             password,
           }),
         }
@@ -99,14 +127,10 @@ export default function AdminLoginPage() {
           "application/json"
         )
       ) {
-        console.error(
-          "Réponse serveur non JSON :",
-          responseText
+        setError(
+          "Le serveur a retourné une réponse invalide. Vérifiez que le backend Express est démarré."
         );
-
-        throw new Error(
-          `Le serveur Express a retourné une réponse invalide (${response.status}). Vérifiez la route /api/auth/login.`
-        );
+        return;
       }
 
       let result: LoginResponse;
@@ -116,19 +140,21 @@ export default function AdminLoginPage() {
           responseText
         ) as LoginResponse;
       } catch {
-        throw new Error(
-          "La réponse JSON du serveur est invalide."
+        setError(
+          "La réponse reçue du serveur est invalide."
         );
+        return;
       }
 
       if (
         !response.ok ||
         !result.success
       ) {
-        throw new Error(
+        setError(
           result.message ||
             "Adresse email ou mot de passe incorrect."
         );
+        return;
       }
 
       router.replace(
@@ -136,16 +162,9 @@ export default function AdminLoginPage() {
       );
 
       router.refresh();
-    } catch (exception) {
-      console.error(
-        "Erreur de connexion :",
-        exception
-      );
-
+    } catch {
       setError(
-        exception instanceof Error
-          ? exception.message
-          : "Connexion impossible."
+        "Connexion au serveur impossible. Vérifiez que le backend est démarré."
       );
     } finally {
       setLoading(false);
@@ -244,13 +263,20 @@ export default function AdminLoginPage() {
             </p>
 
             {error && (
-              <div className="admin-login-error">
+              <div
+                className="admin-login-error"
+                role="alert"
+                aria-live="polite"
+              >
                 <AlertCircle size={18} />
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleLogin}>
+            <form
+              onSubmit={handleLogin}
+              noValidate
+            >
               <label className="admin-login-label">
                 <span>
                   Adresse email
@@ -262,11 +288,15 @@ export default function AdminLoginPage() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(event) =>
+                    onChange={(event) => {
                       setEmail(
                         event.target.value
-                      )
-                    }
+                      );
+
+                      if (error) {
+                        setError("");
+                      }
+                    }}
                     placeholder="admin@farreservice.dz"
                     autoComplete="email"
                     required
@@ -281,9 +311,7 @@ export default function AdminLoginPage() {
                 </span>
 
                 <div className="admin-login-field">
-                  <LockKeyhole
-                    size={18}
-                  />
+                  <LockKeyhole size={18} />
 
                   <input
                     type={
@@ -292,11 +320,15 @@ export default function AdminLoginPage() {
                         : "password"
                     }
                     value={password}
-                    onChange={(event) =>
+                    onChange={(event) => {
                       setPassword(
                         event.target.value
-                      )
-                    }
+                      );
+
+                      if (error) {
+                        setError("");
+                      }
+                    }}
                     placeholder="Votre mot de passe"
                     autoComplete="current-password"
                     required
