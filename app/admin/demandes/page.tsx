@@ -269,6 +269,36 @@ export default function AdminDemandesPage() {
   const [success, setSuccess] =
     useState("");
 
+  useEffect(() => {
+    if (!success) {
+      return;
+    }
+
+    const timer =
+      window.setTimeout(() => {
+        setSuccess("");
+      }, 7000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [success]);
+
+  useEffect(() => {
+    if (!error) {
+      return;
+    }
+
+    const timer =
+      window.setTimeout(() => {
+        setError("");
+      }, 7000);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [error]);
+
   function redirectIfUnauthorized(
     response: Response
   ) {
