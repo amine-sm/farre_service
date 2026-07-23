@@ -234,7 +234,6 @@ export default function ServicesPage() {
       />
 
       {/* Introduction */}
-
       <section className="services-intro-premium">
         <div className="services-intro-pattern" />
 
@@ -324,7 +323,6 @@ export default function ServicesPage() {
       </section>
 
       {/* Services */}
-
       <section className="services-showcase">
         <div className="services-showcase-glow services-showcase-glow-one" />
         <div className="services-showcase-glow services-showcase-glow-two" />
@@ -346,7 +344,7 @@ export default function ServicesPage() {
           </Reveal>
 
           <div className="services-hierarchy">
-            {/* A — Inspection sous-marine, affichée seule */}
+            {/* A — Inspection sous-marine */}
             {(() => {
               const service = services[0];
               const Icon = service.icon;
@@ -355,6 +353,7 @@ export default function ServicesPage() {
                 <Reveal className="services-group-a">
                   <div className="services-group-heading">
                     <span className="services-group-letter">A</span>
+
                     <div>
                       <span>Travaux et services</span>
                       <h3>Inspections sous-marines</h3>
@@ -371,12 +370,22 @@ export default function ServicesPage() {
 
                     <div className="services-showcase-overlay" />
                     <div className="services-showcase-gradient" />
-                    <span className="services-showcase-number">A</span>
+
+                    <span className="services-showcase-number">
+                      A
+                    </span>
 
                     <div className="services-showcase-content">
-                      <div className="services-showcase-icon"><Icon /></div>
-                      <span className="services-showcase-category">Inspection</span>
+                      <div className="services-showcase-icon">
+                        <Icon />
+                      </div>
+
+                      <span className="services-showcase-category">
+                        Inspection
+                      </span>
+
                       <h3>{service.title}</h3>
+
                       <p>{service.description}</p>
 
                       <div className="services-showcase-list">
@@ -398,13 +407,17 @@ export default function ServicesPage() {
               );
             })()}
 
-            {/* B — Travaux de maintenance, répartis de B1 à B7 */}
+            {/* B — Travaux de maintenance */}
             <div className="services-group-b">
               <Reveal className="services-group-heading services-group-heading-b">
                 <span className="services-group-letter">B</span>
+
                 <div>
                   <span>Travaux de maintenance</span>
-                  <h3>Sept domaines d’intervention spécialisés</h3>
+
+                  <h3>
+                    Sept domaines d’intervention spécialisés
+                  </h3>
                 </div>
               </Reveal>
 
@@ -428,12 +441,22 @@ export default function ServicesPage() {
 
                         <div className="services-showcase-overlay" />
                         <div className="services-showcase-gradient" />
-                        <span className="services-showcase-number">{service.number}</span>
+
+                        <span className="services-showcase-number">
+                          {service.number}
+                        </span>
 
                         <div className="services-showcase-content">
-                          <div className="services-showcase-icon"><Icon /></div>
-                          <span className="services-showcase-category">{service.shortTitle}</span>
+                          <div className="services-showcase-icon">
+                            <Icon />
+                          </div>
+
+                          <span className="services-showcase-category">
+                            {service.shortTitle}
+                          </span>
+
                           <h3>{service.title}</h3>
+
                           <p>{service.description}</p>
 
                           <div className="services-showcase-list">
@@ -461,7 +484,6 @@ export default function ServicesPage() {
       </section>
 
       {/* Avantages */}
-
       <section className="services-advantages">
         <div className="container services-advantages-grid">
           {advantages.map((advantage, index) => {
@@ -487,7 +509,6 @@ export default function ServicesPage() {
       </section>
 
       {/* Processus */}
-
       <section className="services-process-premium">
         <div className="container">
           <Reveal className="centered services-process-heading">
@@ -530,8 +551,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* CTA */}
-
+      {/* CTA finale */}
       <section className="services-final-cta">
         <Image
           src="/images/page3.png"
@@ -573,13 +593,25 @@ export default function ServicesPage() {
               <ArrowRight size={19} />
             </Link>
 
-            <a
-              href="tel:+213660952397"
-              className="services-final-cta-phone"
-            >
-              <span>Contact direct</span>
-              <strong>0660 952 397</strong>
-            </a>
+            <div className="services-final-cta-phones">
+              <a
+                href="tel:+213660952397"
+                className="services-final-cta-phone"
+                aria-label="Appeler Farre Service au 0660 95 23 97"
+              >
+                <span>Contact direct 1</span>
+                <strong>0660 95 23 97</strong>
+              </a>
+
+              <a
+                href="tel:+213697117917"
+                className="services-final-cta-phone"
+                aria-label="Appeler Farre Service au 0697 11 79 17"
+              >
+                <span>Contact direct 2</span>
+                <strong>0697 11 79 17</strong>
+              </a>
+            </div>
           </Reveal>
         </div>
       </section>

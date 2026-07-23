@@ -3641,4 +3641,305 @@
   .admin-nav-count {
     margin-left: auto;
   }
+}.admin-multi-image-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.admin-multi-image-item {
+  position: relative;
+  overflow: hidden;
+  min-height: 145px;
+  border: 2px solid #dce6ec;
+  border-radius: 16px;
+  background: #f4f7f9;
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.admin-multi-image-item:hover {
+  border-color: #30b7af;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(27, 79, 89, 0.13);
+}
+
+.admin-multi-image-cover {
+  border-color: #30b7af;
+  box-shadow: 0 0 0 3px rgba(48, 183, 175, 0.12);
+}
+
+.admin-image-cover-button {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: transparent;
+}
+
+.admin-image-cover-button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.admin-image-cover-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 145px;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.admin-multi-image-item:hover .admin-image-cover-button img {
+  transform: scale(1.045);
+}
+
+.admin-image-overlay {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(27, 79, 89, 0.88);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(7px);
+  backdrop-filter: blur(5px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.admin-multi-image-item:hover .admin-image-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.admin-multi-image-cover .admin-image-overlay {
+  background: rgba(48, 183, 175, 0.9);
+}
+
+.admin-cover-badge {
+  position: absolute;
+  top: 11px;
+  left: 11px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: #30b7af;
+  box-shadow: 0 7px 18px rgba(27, 79, 89, 0.22);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* Nouveau design du bouton X */
+
+.admin-image-remove-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 35px;
+  height: 35px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 11px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.94);
+  color: #fe5737;
+  box-shadow: 0 7px 20px rgba(15, 42, 48, 0.22);
+  backdrop-filter: blur(8px);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-image-remove-button:hover:not(:disabled) {
+  color: #ffffff;
+  background: #fe5737;
+  transform: scale(1.08) rotate(4deg);
+  box-shadow: 0 9px 24px rgba(254, 87, 55, 0.36);
+}
+
+.admin-image-remove-button:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.admin-image-remove-button:focus-visible {
+  outline: 3px solid rgba(254, 87, 55, 0.25);
+  outline-offset: 2px;
+}
+
+.admin-image-remove-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 900px) {
+  .admin-multi-image-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-multi-image-grid {
+    grid-template-columns: 1fr;
+  }
+}/* =========================================================
+   AJOUTS CSS POUR LE MODE MODIFICATION DES PROJETS
+   Ajoutez ces styles à votre fichier CSS admin existant.
+   ========================================================= */
+
+.admin-project-item-clickable {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.admin-project-item-clickable:hover {
+  transform: translateY(-2px);
+  border-color: #30b7af;
+  box-shadow: 0 12px 28px rgba(27, 79, 89, 0.12);
+}
+
+.admin-project-item-clickable:focus-visible {
+  outline: 3px solid rgba(48, 183, 175, 0.25);
+  outline-offset: 3px;
+}
+
+.admin-project-item-selected {
+  border-color: #30b7af;
+  box-shadow:
+    0 0 0 3px rgba(48, 183, 175, 0.12),
+    0 12px 28px rgba(27, 79, 89, 0.12);
+}
+
+.admin-form-card-editing {
+  border-color: #30b7af;
+  box-shadow:
+    0 0 0 4px rgba(48, 183, 175, 0.08),
+    0 18px 45px rgba(27, 79, 89, 0.1);
+}
+
+.admin-editing-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 13px 15px;
+  border: 1px solid rgba(48, 183, 175, 0.28);
+  border-radius: 13px;
+  background: rgba(48, 183, 175, 0.08);
+  color: #1b4f59;
+  font-size: 13px;
+}
+
+.admin-editing-banner > span {
+  flex: 1;
+  min-width: 0;
+}
+
+.admin-editing-banner button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #fe5737;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 5px 16px rgba(27, 79, 89, 0.1);
+}
+
+.admin-editing-banner button:hover:not(:disabled) {
+  background: #fe5737;
+  color: #ffffff;
+}
+
+.admin-project-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(48, 183, 175, 0.25);
+  border-radius: 10px;
+  background: rgba(48, 183, 175, 0.1);
+  color: #1b4f59;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-edit-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #30b7af;
+  color: #ffffff;
+}
+
+.admin-existing-image-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 4;
+  padding: 6px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(27, 79, 89, 0.82);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  backdrop-filter: blur(6px);
+}
+
+.admin-upload-zone[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.58;
+}
+
+@media (max-width: 600px) {
+  .admin-editing-banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .admin-editing-banner button {
+    width: 100%;
+    justify-content: center;
+  }
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   ChangeEvent,
   FormEvent,
+  KeyboardEvent,
   useCallback,
   useEffect,
   useMemo,
@@ -21,11 +22,11 @@ import {
   ListOrdered,
   Loader2,
   MapPin,
+  Pencil,
   Plus,
   RotateCcw,
   Save,
   Trash2,
-  Upload,
   Waves,
   X,
 } from "lucide-react";
@@ -36,6 +37,7 @@ interface Project {
   category: string;
   location: string;
   image: string;
+  images?: string[];
   description?: string;
   displayOrder?: number;
   isWide?: boolean | number;
@@ -58,6 +60,23 @@ interface ProjectForm {
   isTall: boolean;
 }
 
+interface GalleryItem {
+  id: string;
+  preview: string;
+  existingPath?: string;
+  file?: File;
+}
+
+type GalleryOrderItem =
+  | {
+      type: "existing";
+      value: string;
+    }
+  | {
+      type: "new";
+      index: number;
+    };
+
 const initialForm: ProjectForm = {
   title: "",
   category: "",
@@ -78,18 +97,21 @@ const categories = [
   "Maintenance électrique",
   "Maintenance industrielle",
   "Maintenance offshore",
-  "Nettoyage sous-marin",
-  "Protection portuaire",
+  "Nettoyage sous-marin","Nettoyage et maintenance industrielle",
+  "Protection portuaire","Protection maritime",
   "Repêchage",
+  "Réparation d’ouvrages portuaires",
+  "Renflouement et sauvetage maritime",
   "Soudure et découpage",
   "Soudure sous-marine",
   "Travaux hydrauliques",
   "Travaux offshore",
-  "Travaux portuaires",
+  "Travaux portuaires","Travaux de protection sous-marine"
 ];
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = (
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+).replace(/\/+$/, "");
 
 function toBoolean(value: boolean | number | undefined) {
   return value === true || value === 1;
@@ -111,7 +133,33 @@ function getImageUrl(image: string) {
     return `${API_URL}${image}`;
   }
 
+  if (image.startsWith("uploads/")) {
+    return `${API_URL}/${image}`;
+  }
+
   return image;
+}
+
+function normalizeProjectImages(project: Project): string[] {
+  const values = [
+    project.image,
+    ...(Array.isArray(project.images) ? project.images : []),
+  ];
+
+  return Array.from(
+    new Set(
+      values.filter(
+        (image): image is string =>
+          typeof image === "string" && image.trim().length > 0
+      )
+    )
+  );
+}
+
+function createGalleryId(prefix: string) {
+  return `${prefix}-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2)}`;
 }
 
 export default function AdminAccesPage() {
@@ -119,16 +167,37 @@ export default function AdminAccesPage() {
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [form, setForm] = useState<ProjectForm>(initialForm);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState("");
+  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
+  const [editingProject, setEditingProject] = useState<Project | null>(
+    null
+  );
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [projectToDelete, setProjectToDelete] =
+    useState<Project | null>(null);
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const formCardRef = useRef<HTMLElement | null>(null);
+  const galleryItemsRef = useRef<GalleryItem[]>([]);
+
+  useEffect(() => {
+    galleryItemsRef.current = galleryItems;
+  }, [galleryItems]);
+
+  useEffect(() => {
+    return () => {
+      galleryItemsRef.current.forEach((item) => {
+        if (item.file && item.preview.startsWith("blob:")) {
+          URL.revokeObjectURL(item.preview);
+        }
+      });
+    };
+  }, []);
 
   const loadProjects = useCallback(async () => {
     setLoading(true);
@@ -139,7 +208,9 @@ export default function AdminAccesPage() {
         method: "GET",
         cache: "no-store",
         credentials: "include",
-        headers: { Accept: "application/json" },
+        headers: {
+          Accept: "application/json",
+        },
       });
 
       const result: ApiResponse<Project[]> = await response.json();
@@ -172,19 +243,15 @@ export default function AdminAccesPage() {
     loadProjects();
   }, [loadProjects]);
 
-  useEffect(() => {
-    return () => {
-      if (imagePreview.startsWith("blob:")) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-  }, [imagePreview]);
-
   const stats = useMemo(
     () => ({
       total: projects.length,
-      wide: projects.filter((project) => toBoolean(project.isWide)).length,
-      tall: projects.filter((project) => toBoolean(project.isTall)).length,
+      wide: projects.filter((project) =>
+        toBoolean(project.isWide)
+      ).length,
+      tall: projects.filter((project) =>
+        toBoolean(project.isTall)
+      ).length,
     }),
     [projects]
   );
@@ -211,51 +278,213 @@ export default function AdminAccesPage() {
     }));
   }
 
-  function handleImage(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-
-    setError("");
-    setMessage("");
-
-    if (!file) return;
-
-    const acceptedTypes = ["image/jpeg", "image/png", "image/webp"];
-
-    if (!acceptedTypes.includes(file.type)) {
-      setError("Le fichier doit être une image JPG, PNG ou WEBP.");
-      event.target.value = "";
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError("La taille de l’image ne doit pas dépasser 5 Mo.");
-      event.target.value = "";
-      return;
-    }
-
-    if (imagePreview.startsWith("blob:")) {
-      URL.revokeObjectURL(imagePreview);
-    }
-
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+  function revokeNewGalleryItems(items: GalleryItem[]) {
+    items.forEach((item) => {
+      if (item.file && item.preview.startsWith("blob:")) {
+        URL.revokeObjectURL(item.preview);
+      }
+    });
   }
 
-  function resetForm() {
-    if (imagePreview.startsWith("blob:")) {
-      URL.revokeObjectURL(imagePreview);
-    }
+  function clearGallery() {
+    revokeNewGalleryItems(galleryItemsRef.current);
 
-    setForm(initialForm);
-    setImageFile(null);
-    setImagePreview("");
+    galleryItemsRef.current = [];
+    setGalleryItems([]);
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
   }
 
-  async function createProject(event: FormEvent<HTMLFormElement>) {
+  function handleImages(event: ChangeEvent<HTMLInputElement>) {
+    const selectedFiles = Array.from(event.target.files || []);
+
+    setError("");
+    setMessage("");
+
+    if (selectedFiles.length === 0) return;
+
+    const remainingPlaces = 12 - galleryItems.length;
+
+    if (remainingPlaces <= 0) {
+      setError("Vous avez déjà atteint la limite de 12 photos.");
+      event.target.value = "";
+      return;
+    }
+
+    if (selectedFiles.length > remainingPlaces) {
+      setError(
+        `Vous pouvez encore ajouter seulement ${remainingPlaces} photo${
+          remainingPlaces > 1 ? "s" : ""
+        }.`
+      );
+      event.target.value = "";
+      return;
+    }
+
+    const acceptedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "image/gif",
+    ];
+
+    const invalidFile = selectedFiles.find(
+      (file) => !acceptedTypes.includes(file.type)
+    );
+
+    if (invalidFile) {
+      setError("Toutes les photos doivent être JPG, PNG, WEBP ou GIF.");
+      event.target.value = "";
+      return;
+    }
+
+    const oversizedFile = selectedFiles.find(
+      (file) => file.size > 10 * 1024 * 1024
+    );
+
+    if (oversizedFile) {
+      setError("Chaque photo ne doit pas dépasser 10 Mo.");
+      event.target.value = "";
+      return;
+    }
+
+    const newItems: GalleryItem[] = selectedFiles.map((file) => ({
+      id: createGalleryId("new"),
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setGalleryItems((previous) => [...previous, ...newItems]);
+
+    event.target.value = "";
+  }
+
+  function setAsCover(indexToMove: number) {
+    if (indexToMove <= 0 || indexToMove >= galleryItems.length) {
+      return;
+    }
+
+    setGalleryItems((previous) => {
+      const updated = [...previous];
+      const [selectedItem] = updated.splice(indexToMove, 1);
+      updated.unshift(selectedItem);
+      return updated;
+    });
+
+    setMessage(
+      "La photo sélectionnée est maintenant la photo de couverture."
+    );
+    setError("");
+  }
+
+  function removeGalleryImage(indexToRemove: number) {
+    const item = galleryItems[indexToRemove];
+
+    if (item?.file && item.preview.startsWith("blob:")) {
+      URL.revokeObjectURL(item.preview);
+    }
+
+    setGalleryItems((previous) =>
+      previous.filter((_, index) => index !== indexToRemove)
+    );
+
+    setMessage("");
+    setError("");
+  }
+
+  function cancelEditing(clearMessages = true) {
+    clearGallery();
+    setEditingProject(null);
+    setForm(initialForm);
+
+    if (clearMessages) {
+      setMessage("");
+      setError("");
+    }
+  }
+
+  function resetForm() {
+    cancelEditing(true);
+  }
+
+  function selectProjectForEditing(project: Project) {
+    clearGallery();
+
+    const projectImages = normalizeProjectImages(project);
+
+    const existingItems: GalleryItem[] = projectImages.map(
+      (image, index) => ({
+        id: `existing-${project.id}-${index}-${image}`,
+        existingPath: image,
+        preview: getImageUrl(image),
+      })
+    );
+
+    setEditingProject(project);
+    setForm({
+      title: project.title || "",
+      category: project.category || "",
+      location: project.location || "",
+      description: project.description || "",
+      displayOrder: String(project.displayOrder ?? 0),
+      isWide: toBoolean(project.isWide),
+      isTall: toBoolean(project.isTall),
+    });
+    setGalleryItems(existingItems);
+    setError("");
+    setMessage(
+      "Mode modification activé. Modifiez les informations puis enregistrez."
+    );
+
+    window.requestAnimationFrame(() => {
+      formCardRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }
+
+  function handleProjectKeyDown(
+    event: KeyboardEvent<HTMLElement>,
+    project: Project
+  ) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectProjectForEditing(project);
+    }
+  }
+
+  function buildGalleryPayload(data: FormData) {
+    const galleryOrder: GalleryOrderItem[] = [];
+    let newFileIndex = 0;
+
+    galleryItems.forEach((item) => {
+      if (item.existingPath) {
+        galleryOrder.push({
+          type: "existing",
+          value: item.existingPath,
+        });
+        return;
+      }
+
+      if (item.file) {
+        data.append("images", item.file);
+
+        galleryOrder.push({
+          type: "new",
+          index: newFileIndex,
+        });
+
+        newFileIndex += 1;
+      }
+    });
+
+    data.append("galleryOrder", JSON.stringify(galleryOrder));
+  }
+
+  async function saveProject(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setError("");
@@ -269,7 +498,10 @@ export default function AdminAccesPage() {
     if (!title) return setError("Le titre du travail est obligatoire.");
     if (!category) return setError("La catégorie est obligatoire.");
     if (!location) return setError("Le lieu du travail est obligatoire.");
-    if (!imageFile) return setError("Veuillez sélectionner une image.");
+
+    if (galleryItems.length === 0) {
+      return setError("Veuillez conserver ou sélectionner au moins une image.");
+    }
 
     if (Number.isNaN(displayOrder) || displayOrder < 0) {
       return setError(
@@ -289,15 +521,21 @@ export default function AdminAccesPage() {
       data.append("displayOrder", String(displayOrder));
       data.append("isWide", String(form.isWide));
       data.append("isTall", String(form.isTall));
-      data.append("imageFile", imageFile);
 
-      const response = await fetch(`${API_URL}/api/projects`, {
-        method: "POST",
+      buildGalleryPayload(data);
+
+      const isEditing = editingProject !== null;
+      const requestUrl = isEditing
+        ? `${API_URL}/api/projects/${editingProject.id}`
+        : `${API_URL}/api/projects`;
+
+      const response = await fetch(requestUrl, {
+        method: isEditing ? "PUT" : "POST",
         credentials: "include",
         body: data,
       });
 
-      const result: ApiResponse<{ id: number }> = await response.json();
+      const result: ApiResponse<Project> = await response.json();
 
       if (response.status === 401) {
         router.replace("/admin/connexion");
@@ -307,20 +545,29 @@ export default function AdminAccesPage() {
 
       if (!response.ok || !result.success) {
         throw new Error(
-          result.message || "Impossible d’ajouter le travail."
+          result.message ||
+            (isEditing
+              ? "Impossible de modifier le travail."
+              : "Impossible d’ajouter le travail.")
         );
       }
 
+      cancelEditing(false);
+
       setMessage(
-        result.message || "Le travail a été ajouté avec succès."
+        result.message ||
+          (isEditing
+            ? "Le travail a été modifié avec succès."
+            : "Le travail a été ajouté avec succès.")
       );
 
-      resetForm();
       await loadProjects();
     } catch (exception) {
       setError(
         exception instanceof Error
           ? exception.message
+          : editingProject
+          ? "Impossible de modifier le travail."
           : "Impossible d’ajouter le travail."
       );
     } finally {
@@ -361,10 +608,13 @@ export default function AdminAccesPage() {
         previous.filter((item) => item.id !== project.id)
       );
 
+      if (editingProject?.id === project.id) {
+        cancelEditing(false);
+      }
+
       setMessage(
         result.message || "Le travail a été supprimé avec succès."
       );
-
       setProjectToDelete(null);
     } catch (exception) {
       setError(
@@ -390,14 +640,10 @@ export default function AdminAccesPage() {
             <h1>Gestion des réalisations</h1>
 
             <p>
-              Ajoutez, organisez et publiez les travaux visibles dans le
-              portfolio de Farre Service.
+              Cliquez sur une réalisation pour afficher ses informations dans
+              le formulaire et la modifier.
             </p>
           </div>
-
-
-
-  
         </section>
 
         <section className="admin-stat-grid">
@@ -447,18 +693,49 @@ export default function AdminAccesPage() {
         )}
 
         <div className="admin-workspace">
-          <section className="admin-card admin-form-card">
+          <section
+            ref={formCardRef}
+            className={`admin-card admin-form-card ${
+              editingProject ? "admin-form-card-editing" : ""
+            }`}
+          >
             <div className="admin-card-heading">
               <span className="admin-card-icon">
-                <Plus size={21} />
+                {editingProject ? <Pencil size={21} /> : <Plus size={21} />}
               </span>
+
               <div>
-                <h2>Ajouter une réalisation</h2>
-                <p>Renseignez les informations du nouveau projet.</p>
+                <h2>
+                  {editingProject
+                    ? "Modifier la réalisation"
+                    : "Ajouter une réalisation"}
+                </h2>
+                <p>
+                  {editingProject
+                    ? `Modification du projet n°${editingProject.id}.`
+                    : "Renseignez les informations du nouveau projet."}
+                </p>
               </div>
             </div>
 
-            <form className="admin-project-form" onSubmit={createProject}>
+            {editingProject && (
+              <div className="admin-editing-banner">
+                <Pencil size={17} />
+                <span>
+                  Vous modifiez : <strong>{editingProject.title}</strong>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => cancelEditing()}
+                  disabled={saving}
+                >
+                  <X size={17} />
+                  Annuler
+                </button>
+              </div>
+            )}
+
+            <form className="admin-project-form" onSubmit={saveProject}>
               <div className="admin-field">
                 <label htmlFor="title">
                   Titre du travail <span>*</span>
@@ -539,7 +816,10 @@ export default function AdminAccesPage() {
               </div>
 
               <div className="admin-field">
-                <label htmlFor="description">Description complémentaire</label>
+                <label htmlFor="description">
+                  Description complémentaire
+                </label>
+
                 <textarea
                   id="description"
                   name="description"
@@ -553,47 +833,112 @@ export default function AdminAccesPage() {
 
               <div className="admin-field">
                 <label>
-                  Image du travail <span>*</span>
+                  Photos du travail <span>*</span>
                 </label>
 
                 <input
                   ref={fileInputRef}
-                  id="imageFile"
+                  id="images"
                   type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleImage}
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  multiple
+                  onChange={handleImages}
                   className="admin-hidden-file"
-                  disabled={saving}
+                  disabled={saving || galleryItems.length >= 12}
                 />
 
-                <label htmlFor="imageFile" className="admin-upload-zone">
-                  {imagePreview ? (
-                    <>
-                      <img
-                        src={imagePreview}
-                        alt="Aperçu du travail"
-                        className="admin-image-preview"
-                      />
-                      <span className="admin-image-overlay">
-                        <Upload size={23} />
-                        Changer l’image
-                      </span>
-                    </>
-                  ) : (
-                    <span className="admin-upload-placeholder">
-                      <span className="admin-upload-icon">
-                        <ImagePlus size={29} />
-                      </span>
-                      <strong>Sélectionner une image</strong>
-                      <small>JPG, PNG ou WEBP — Maximum 5 Mo</small>
+                <label
+                  htmlFor="images"
+                  className="admin-upload-zone"
+                  aria-disabled={saving || galleryItems.length >= 12}
+                >
+                  <span className="admin-upload-placeholder">
+                    <span className="admin-upload-icon">
+                      <ImagePlus size={29} />
                     </span>
-                  )}
+
+                    <strong>
+                      {editingProject
+                        ? "Ajouter de nouvelles photos"
+                        : "Sélectionner plusieurs photos"}
+                    </strong>
+
+                    <small>
+                      {galleryItems.length}/12 photos — cliquez sur une photo
+                      pour la mettre en couverture
+                    </small>
+                  </span>
                 </label>
 
-                {imageFile && (
+                {galleryItems.length > 0 && (
+                  <div className="admin-multi-image-grid">
+                    {galleryItems.map((item, index) => (
+                      <article
+                        className={`admin-multi-image-item ${
+                          index === 0
+                            ? "admin-multi-image-cover"
+                            : ""
+                        }`}
+                        key={item.id}
+                      >
+                        <button
+                          type="button"
+                          className="admin-image-cover-button"
+                          onClick={() => setAsCover(index)}
+                          disabled={saving || index === 0}
+                          aria-label={
+                            index === 0
+                              ? "Photo de couverture actuelle"
+                              : `Définir la photo ${index + 1} comme couverture`
+                          }
+                        >
+                          <img
+                            src={item.preview}
+                            alt={`Aperçu ${index + 1}`}
+                          />
+
+                          <span className="admin-image-overlay">
+                            {index === 0
+                              ? "Photo de couverture"
+                              : "Définir comme couverture"}
+                          </span>
+                        </button>
+
+                        {index === 0 && (
+                          <span className="admin-cover-badge">
+                            <CheckCircle2 size={14} />
+                            Couverture
+                          </span>
+                        )}
+
+                        {item.existingPath && (
+                          <span className="admin-existing-image-badge">
+                            Enregistrée
+                          </span>
+                        )}
+
+                        <button
+                          type="button"
+                          className="admin-image-remove-button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            removeGalleryImage(index);
+                          }}
+                          aria-label={`Supprimer la photo ${index + 1}`}
+                          disabled={saving}
+                        >
+                          <X size={17} strokeWidth={2.7} />
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                )}
+
+                {galleryItems.length > 0 && (
                   <span className="admin-selected-file">
                     <CheckCircle2 size={16} />
-                    {imageFile.name}
+                    {galleryItems.length} photo
+                    {galleryItems.length > 1 ? "s" : ""} dans la galerie
                   </span>
                 )}
               </div>
@@ -647,7 +992,7 @@ export default function AdminAccesPage() {
                   disabled={saving}
                 >
                   <RotateCcw size={18} />
-                  Réinitialiser
+                  {editingProject ? "Annuler la modification" : "Réinitialiser"}
                 </button>
 
                 <button
@@ -658,12 +1003,16 @@ export default function AdminAccesPage() {
                   {saving ? (
                     <>
                       <Loader2 size={18} className="admin-spin" />
-                      Enregistrement...
+                      {editingProject
+                        ? "Modification..."
+                        : "Enregistrement..."}
                     </>
                   ) : (
                     <>
                       <Save size={18} />
-                      Publier le travail
+                      {editingProject
+                        ? "Enregistrer les modifications"
+                        : "Publier le travail"}
                     </>
                   )}
                 </button>
@@ -676,8 +1025,7 @@ export default function AdminAccesPage() {
               <div>
                 <h2>Travaux enregistrés</h2>
                 <p>
-                  {projects.length} réalisation
-                  {projects.length !== 1 ? "s" : ""} dans la galerie.
+                  Cliquez sur un projet pour le modifier.
                 </p>
               </div>
 
@@ -702,9 +1050,22 @@ export default function AdminAccesPage() {
                 {projects.map((project, index) => {
                   const wide = toBoolean(project.isWide);
                   const tall = toBoolean(project.isTall);
+                  const selected = editingProject?.id === project.id;
 
                   return (
-                    <article key={project.id} className="admin-project-item">
+                    <article
+                      key={project.id}
+                      className={`admin-project-item admin-project-item-clickable ${
+                        selected ? "admin-project-item-selected" : ""
+                      }`}
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => selectProjectForEditing(project)}
+                      onKeyDown={(event) =>
+                        handleProjectKeyDown(event, project)
+                      }
+                      aria-label={`Modifier ${project.title}`}
+                    >
                       <div className="admin-project-thumbnail">
                         <img
                           src={getImageUrl(project.image)}
@@ -738,19 +1099,40 @@ export default function AdminAccesPage() {
                             {!wide && !tall && <span>Standard</span>}
                           </div>
 
-                          <button
-                            type="button"
-                            className="admin-delete-button"
-                            onClick={() => setProjectToDelete(project)}
-                            disabled={deletingId === project.id}
-                          >
-                            {deletingId === project.id ? (
-                              <Loader2 size={16} className="admin-spin" />
-                            ) : (
-                              <Trash2 size={16} />
-                            )}
-                
-                          </button>
+                          <div className="admin-project-actions">
+                            <button
+                              type="button"
+                              className="admin-edit-button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                selectProjectForEditing(project);
+                              }}
+                              disabled={saving}
+                              aria-label={`Modifier ${project.title}`}
+                            >
+                              <Pencil size={16} />
+                            </button>
+
+                            <button
+                              type="button"
+                              className="admin-delete-button"
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                setProjectToDelete(project);
+                              }}
+                              disabled={deletingId === project.id}
+                              aria-label={`Supprimer ${project.title}`}
+                            >
+                              {deletingId === project.id ? (
+                                <Loader2
+                                  size={16}
+                                  className="admin-spin"
+                                />
+                              ) : (
+                                <Trash2 size={16} />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </article>
@@ -818,9 +1200,7 @@ export default function AdminAccesPage() {
 
               <div className="admin-delete-project-content">
                 <span>{projectToDelete.category}</span>
-
                 <h3>{projectToDelete.title}</h3>
-
                 <p>
                   <MapPin size={15} />
                   {projectToDelete.location || "Lieu non renseigné"}
@@ -865,7 +1245,6 @@ export default function AdminAccesPage() {
           </section>
         </div>
       )}
-
     </main>
   );
 }

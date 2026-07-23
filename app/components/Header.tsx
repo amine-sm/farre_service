@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -67,7 +66,7 @@ export default function Header() {
   }, [pathname]);
 
   /*
-   * Bloquer le scroll de la page lorsque le menu mobile est ouvert.
+   * Bloquer le scroll lorsque le menu mobile est ouvert.
    */
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
@@ -150,27 +149,52 @@ export default function Header() {
               Travaux maritimes, portuaires et sous-marins
             </span>
 
-            <a
-              href="tel:+213660952397"
-              className="header-phone"
-              aria-label="Appeler Farre Service au 0660 952 397"
-            >
-              <Phone
-                className="header-phone-icon"
-                size={15}
-                aria-hidden="true"
-              />
+            <div className="header-phone-list">
+              <a
+                href="tel:+213660952397"
+                className="header-phone"
+                aria-label="Appeler Farre Service au 0660 95 23 97"
+              >
+                <Phone
+                  className="header-phone-icon"
+                  size={15}
+                  aria-hidden="true"
+                />
 
-              <span className="header-phone-number">
-                0660 952 397
+                <span className="header-phone-number">
+                  0660 95 23 97
+                </span>
+              </a>
+
+              <span
+                className="header-phone-separator"
+                aria-hidden="true"
+              >
+                |
               </span>
-            </a>
+
+              <a
+                href="tel:+213697117917"
+                className="header-phone"
+                aria-label="Appeler Farre Service au 0697 11 79 17"
+              >
+                <Phone
+                  className="header-phone-icon"
+                  size={15}
+                  aria-hidden="true"
+                />
+
+                <span className="header-phone-number">
+                  0697 11 79 17
+                </span>
+              </a>
+            </div>
           </div>
         </div>
 
         {/* Navigation principale */}
         <div className="container header-main">
-          {/* Logo : redirection vers Accueil */}
+          {/* Logo */}
           <Link
             href="/"
             scroll
@@ -248,9 +272,7 @@ export default function Header() {
       {/* Menu mobile */}
       <div
         id="mobile-navigation"
-        className={
-          menuOpen ? "mobile-menu open" : "mobile-menu"
-        }
+        className={menuOpen ? "mobile-menu open" : "mobile-menu"}
         aria-hidden={!menuOpen}
       >
         <nav aria-label="Navigation mobile">
@@ -278,6 +300,26 @@ export default function Header() {
               </Link>
             );
           })}
+
+          <div className="mobile-menu-phones">
+            <a
+              href="tel:+213660952397"
+              className="mobile-menu-phone"
+              tabIndex={menuOpen ? 0 : -1}
+            >
+              <Phone size={17} aria-hidden="true" />
+              <span>0660 95 23 97</span>
+            </a>
+
+            <a
+              href="tel:+213697117917"
+              className="mobile-menu-phone"
+              tabIndex={menuOpen ? 0 : -1}
+            >
+              <Phone size={17} aria-hidden="true" />
+              <span>0697 11 79 17</span>
+            </a>
+          </div>
 
           <Link
             href="/contact"

@@ -27,29 +27,31 @@ const API_URL =
 const details = [
   {
     icon: Phone,
-    title: "Téléphone",
-    value: "0660 952 397",
+    title: "Téléphone 1",
+    value: "0660 95 23 97",
     href: "tel:+213660952397",
+  },
+  {
+    icon: Phone,
+    title: "Téléphone 2",
+    value: "0697 11 79 17",
+    href: "tel:+213697117917",
   },
   {
     icon: Mail,
     title: "Adresse e-mail",
-    value:
-      "benkadouryacine05@gmail.com",
-    href:
-      "mailto:benkadouryacine05@gmail.com",
+    value: "farreservice@gmail.com",
+    href: "mailto:farreservice@gmail.com",
   },
   {
     icon: MapPin,
     title: "Adresse",
-    value:
-      "Lot N°32 Hai Belgaid, Bir El Djir, Oran",
+    value: "Lot N°32 Hai Belgaid, Bir El Djir, Oran",
   },
   {
     icon: Clock3,
     title: "Horaires",
-    value:
-      "Dimanche – Jeudi : 08h00 – 17h00",
+    value: "Dimanche – Jeudi : 08h00 – 17h00",
   },
 ];
 
@@ -308,22 +310,7 @@ export default function ContactPage() {
               )}
             </div>
 
-            <div className="emergency-card">
-              <CheckCircle2 />
 
-              <div>
-                <strong>
-                  Intervention technique
-                  urgente
-                </strong>
-
-                <p>
-                  Pour une demande urgente,
-                  contactez-nous directement
-                  par téléphone.
-                </p>
-              </div>
-            </div>
           </Reveal>
 
           <Reveal

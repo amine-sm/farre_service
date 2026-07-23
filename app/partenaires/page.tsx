@@ -214,7 +214,7 @@ function ClientsLogoCarousel({ items }: { items: ClientItem[] }) {
 
   const logoClients = items.filter(
     (client): client is ClientItem & { logo: string } =>
-      Boolean(client.logo),
+      Boolean(client.logo)
   );
 
   const marqueeClients = [...logoClients, ...logoClients];
@@ -382,6 +382,7 @@ export default function PartenairesPage() {
 
               <div>
                 <strong>Partenariats solides</strong>
+
                 <span>
                   Institutionnels, techniques et académiques
                 </span>
@@ -589,13 +590,25 @@ export default function PartenairesPage() {
               <ArrowRight size={19} />
             </Link>
 
-            <a
-              href="tel:+213660952397"
-              className="partnership-premium-phone"
-            >
-              <span>Contact direct</span>
-              <strong>0660 952 397</strong>
-            </a>
+            <div className="partnership-premium-phones">
+              <a
+                href="tel:+213660952397"
+                className="partnership-premium-phone"
+                aria-label="Appeler Farre Service au 0660 95 23 97"
+              >
+                <span>Contact direct 1</span>
+                <strong>0660 95 23 97</strong>
+              </a>
+
+              <a
+                href="tel:+213697117917"
+                className="partnership-premium-phone"
+                aria-label="Appeler Farre Service au 0697 11 79 17"
+              >
+                <span>Contact direct 2</span>
+                <strong>0697 11 79 17</strong>
+              </a>
+            </div>
           </Reveal>
         </div>
       </section>

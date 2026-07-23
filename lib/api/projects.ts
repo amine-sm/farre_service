@@ -4,6 +4,7 @@ export interface Project {
   category: string;
   location: string;
   image: string;
+  images: string[];
   description: string;
   displayOrder: number;
   isActive?: boolean | number | string;
@@ -70,7 +71,8 @@ export function toBoolean(
       normalizedValue === "1" ||
       normalizedValue === "true" ||
       normalizedValue === "yes" ||
-      normalizedValue === "oui"
+      normalizedValue === "oui" ||
+      normalizedValue === "on"
     );
   }
 
@@ -123,6 +125,98 @@ export function getProjectImageUrl(
 }
 
 /**
+ * Transforme les différents formats possibles de la
+ * colonne MySQL images en tableau de chaînes.
+ *
+ * Formats acceptés :
+ *
+ * - tableau JavaScript
+ * - chaîne JSON
+ * - chaîne séparée par virgules, points-virgules ou |
+ */
+function normalizeProjectImages(
+  value: unknown
+): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .filter(
+        (image): image is string =>
+          typeof image === "string" &&
+          image.trim().length > 0
+      )
+      .map((image) => image.trim());
+  }
+
+  if (
+    typeof value !== "string" ||
+    !value.trim()
+  ) {
+    return [];
+  }
+
+  try {
+    const parsedValue = JSON.parse(value);
+
+    if (Array.isArray(parsedValue)) {
+      return parsedValue
+        .filter(
+          (image): image is string =>
+            typeof image === "string" &&
+            image.trim().length > 0
+        )
+        .map((image) => image.trim());
+    }
+  } catch {
+    /*
+     * La valeur n’est pas du JSON.
+     * On accepte également une liste séparée.
+     */
+  }
+
+  return value
+    .split(/[,;|]/)
+    .map((image) => image.trim())
+    .filter(Boolean);
+}
+
+/**
+ * Retourne toutes les URL d’images d’un projet.
+ *
+ * L’image principale est toujours placée en premier.
+ * Les doublons sont supprimés.
+ */
+export function getProjectGalleryUrls(
+  project: Pick<Project, "image" | "images">
+): string[] {
+  const values = [
+    project.image,
+    ...(Array.isArray(project.images)
+      ? project.images
+      : []),
+  ];
+
+  const uniqueImages = Array.from(
+    new Set(
+      values
+        .filter(
+          (image): image is string =>
+            typeof image === "string" &&
+            image.trim().length > 0
+        )
+        .map((image) => image.trim())
+    )
+  );
+
+  if (uniqueImages.length === 0) {
+    return [getProjectImageUrl(null)];
+  }
+
+  return uniqueImages.map(
+    getProjectImageUrl
+  );
+}
+
+/**
  * Retourne le texte contenu dans la réponse HTTP.
  * Cette fonction permet d’afficher l’erreur réelle
  * retournée par Express.
@@ -165,6 +259,31 @@ function parseJsonResponse<T>(
 function normalizeProject(
   project: Project
 ): Project {
+  const normalizedMainImage =
+    typeof project.image === "string"
+      ? project.image.trim()
+      : "";
+
+  const normalizedImages =
+    normalizeProjectImages(
+      (project as Project & {
+        images?: unknown;
+      }).images
+    );
+
+  /*
+   * On ajoute automatiquement l’image principale
+   * dans le tableau images si elle n’y existe pas.
+   */
+  const completeImages = Array.from(
+    new Set(
+      [
+        normalizedMainImage,
+        ...normalizedImages,
+      ].filter(Boolean)
+    )
+  );
+
   return {
     ...project,
 
@@ -172,27 +291,26 @@ function normalizeProject(
 
     title:
       typeof project.title === "string"
-        ? project.title
+        ? project.title.trim()
         : "",
 
     category:
       typeof project.category === "string"
-        ? project.category
+        ? project.category.trim()
         : "",
 
     location:
       typeof project.location === "string"
-        ? project.location
+        ? project.location.trim()
         : "",
 
-    image:
-      typeof project.image === "string"
-        ? project.image
-        : "",
+    image: normalizedMainImage,
+
+    images: completeImages,
 
     description:
       typeof project.description === "string"
-        ? project.description
+        ? project.description.trim()
         : "",
 
     displayOrder:
@@ -206,6 +324,16 @@ function normalizeProject(
     isWide: toBoolean(project.isWide),
 
     isTall: toBoolean(project.isTall),
+
+    createdAt:
+      typeof project.createdAt === "string"
+        ? project.createdAt
+        : undefined,
+
+    updatedAt:
+      typeof project.updatedAt === "string"
+        ? project.updatedAt
+        : undefined,
   };
 }
 
@@ -263,7 +391,9 @@ export async function getProjects(): Promise<
           parsedError.message ||
           responseText;
       } catch {
-        // On conserve le texte original.
+        /*
+         * On conserve le texte original.
+         */
       }
 
       throw new Error(
@@ -293,19 +423,28 @@ export async function getProjects(): Promise<
       ? result.data.map(normalizeProject)
       : [];
 
-    return projects.sort((first, second) => {
-      const firstOrder =
-        Number(first.displayOrder) || 0;
+    return projects.sort(
+      (first, second) => {
+        const firstOrder =
+          Number(first.displayOrder) || 0;
 
-      const secondOrder =
-        Number(second.displayOrder) || 0;
+        const secondOrder =
+          Number(second.displayOrder) || 0;
 
-      if (firstOrder !== secondOrder) {
-        return firstOrder - secondOrder;
+        if (
+          firstOrder !== secondOrder
+        ) {
+          return (
+            firstOrder - secondOrder
+          );
+        }
+
+        return (
+          Number(second.id) -
+          Number(first.id)
+        );
       }
-
-      return Number(second.id) - Number(first.id);
-    });
+    );
   } catch (error) {
     console.error(
       "[getProjects] Erreur complète :",
@@ -340,7 +479,8 @@ export async function getProjectById(
     return null;
   }
 
-  const url = `${API_URL}/api/projects/${projectId}`;
+  const url =
+    `${API_URL}/api/projects/${projectId}`;
 
   try {
     const response = await fetch(url, {
@@ -378,11 +518,16 @@ export async function getProjectById(
         url
       );
 
-    if (!result.success || !result.data) {
+    if (
+      !result.success ||
+      !result.data
+    ) {
       return null;
     }
 
-    return normalizeProject(result.data);
+    return normalizeProject(
+      result.data
+    );
   } catch (error) {
     console.error(
       "[getProjectById] Erreur :",

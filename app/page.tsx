@@ -274,17 +274,24 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className="about-actions">
-              <Link href="/services" className="button button-dark">
-                Découvrir l’entreprise
-                <ArrowRight size={18} />
-              </Link>
+<div className="about-actions">
+  <Link href="/services" className="button button-dark">
+    Découvrir l’entreprise
+    <ArrowRight size={18} />
+  </Link>
 
-              <a href="tel:+213660952397" className="phone-link">
-                <span>Contact direct</span>
-                <strong>0660 952 397</strong>
-              </a>
-            </div>
+  <div className="phone-numbers">
+    <a href="tel:+213660952397" className="phone-link">
+      <span>Contact 1</span>
+      <strong>0660 95 23 97</strong>
+    </a>
+
+    <a href="tel:+213697117917" className="phone-link">
+      <span>Contact 2</span>
+      <strong>0697 11 79 17</strong>
+    </a>
+  </div>
+</div>
           </Reveal>
         </div>
       </section>

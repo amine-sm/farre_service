@@ -79,19 +79,27 @@ export default function Footer() {
         <div className="footer-column footer-contact">
           <h3>Coordonnées</h3>
 
-          <a href="tel:+213660952397">
-            <Phone />
-            <span>
-              <small>Téléphone</small>
-              0660 952 397
-            </span>
-          </a>
+     <a href="tel:+213660952397">
+  <Phone />
+  <span>
+    <small>Téléphone 1</small>
+    0660 95 23 97
+  </span>
+</a>
 
-          <a href="mailto:benkadouryacine05@gmail.com">
+<a href="tel:+213697117917">
+  <Phone />
+  <span>
+    <small>Téléphone 2</small>
+    0697 11 79 17
+  </span>
+</a>
+
+          <a href="mailto:farreservice@gmail.com">
             <Mail />
             <span>
               <small>Adresse e-mail</small>
-              benkadouryacine05@gmail.com
+      farreservice@gmail.com
             </span>
           </a>
 

@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,13 +7,13 @@ import {
   Camera,
   CheckCircle2,
   HardHat,
-  MapPin,
   ShieldCheck,
   Waves,
 } from "lucide-react";
 
 import PageHero from "../components/PageHero";
 import Reveal from "../components/Reveal";
+import ProjectGallery from "../components/ProjectGallery";
 
 import {
   getProjectImageUrl,
@@ -73,22 +72,59 @@ function getProjectKey(
 }
 
 /**
- * Vérifie si l’image provient du backend Express.
- *
- * Les images Express utilisent /uploads/...
+ * Transforme les différents formats possibles de galerie
+ * (tableau JSON, tableau JavaScript ou chaîne séparée).
  */
-function isBackendImage(
-  imageUrl: string
-): boolean {
-  return (
-    imageUrl.includes("/uploads/") ||
-    imageUrl.startsWith("http://") ||
-    imageUrl.startsWith("https://")
-  );
+type ProjectWithGallery = Project & {
+  images?: string[] | string | null;
+  gallery?: string[] | string | null;
+  project_images?: string[] | string | null;
+};
+
+function parseProjectImages(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .filter(
+        (item): item is string =>
+          typeof item === "string"
+      )
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (
+    typeof value !== "string" ||
+    !value.trim()
+  ) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+
+    if (Array.isArray(parsed)) {
+      return parsed.filter(
+        (item): item is string =>
+          typeof item === "string" &&
+          item.trim().length > 0
+      );
+    }
+  } catch {
+    /*
+     * Accepte également une chaîne :
+     * photo1.jpg,photo2.jpg
+     */
+  }
+
+  return value
+    .split(/[,;|]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
 /**
- * Carte d’un projet.
+ * Carte interactive d’un projet.
+ * Le composant client ouvre une galerie plein écran.
  */
 function ProjectCard({
   project,
@@ -115,12 +151,48 @@ function ProjectCard({
     project.description
   );
 
-  const wide = toBoolean(project.isWide);
-  const tall = toBoolean(project.isTall);
+  const wide = toBoolean(
+    project.isWide
+  );
+
+  const tall = toBoolean(
+    project.isTall
+  );
 
   const imageUrl = getProjectImageUrl(
     project.image
   );
+
+  const projectWithGallery =
+    project as ProjectWithGallery;
+
+  const galleryImages = Array.from(
+    new Set(
+      [
+        project.image,
+        ...parseProjectImages(
+          projectWithGallery.images
+        ),
+        ...parseProjectImages(
+          projectWithGallery.gallery
+        ),
+        ...parseProjectImages(
+          projectWithGallery.project_images
+        ),
+      ]
+        .filter(
+          (item): item is string =>
+            typeof item === "string"
+        )
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .map(getProjectImageUrl)
+    )
+  );
+
+  if (galleryImages.length === 0) {
+    galleryImages.push(imageUrl);
+  }
 
   const itemClasses = [
     "portfolio-premium-item",
@@ -143,64 +215,19 @@ function ProjectCard({
       delay={(index % 3) * 0.06}
       className={itemClasses}
     >
-      <article
-        className="portfolio-premium-card"
-        style={{
-          position: "relative",
-          height: "100%",
-          minHeight: tall
-            ? "520px"
-            : "390px",
-          overflow: "hidden",
-        }}
-      >
-        <Image
-          src={imageUrl}
-          alt={imageAlt}
-          fill
-          unoptimized={isBackendImage(imageUrl)}
-          sizes={
-            wide
-              ? "(max-width: 900px) 100vw, 66vw"
-              : "(max-width: 900px) 100vw, 33vw"
-          }
-          style={{
-            objectFit: "cover",
-          }}
-        />
-
-        <div className="portfolio-premium-overlay" />
-        <div className="portfolio-premium-gradient" />
-
-        <span className="portfolio-premium-number">
-          {String(index + 1).padStart(2, "0")}
-        </span>
-
-        <div className="portfolio-premium-content">
-          <span className="portfolio-premium-category">
-            {category}
-          </span>
-
-          <h3>{title}</h3>
-
-          {description && (
-            <p className="portfolio-project-description">
-              {description}
-            </p>
-          )}
-
-          {location && (
-            <p className="portfolio-premium-location">
-              <MapPin
-                size={18}
-                aria-hidden="true"
-              />
-
-              <span>{location}</span>
-            </p>
-          )}
-        </div>
-      </article>
+      <ProjectGallery
+        index={index}
+        imageUrl={imageUrl}
+        galleryImages={galleryImages}
+        imageAlt={imageAlt}
+        itemClasses="portfolio-gallery-inner"
+        title={title}
+        category={category}
+        location={location}
+        description={description}
+        wide={wide}
+        tall={tall}
+      />
     </Reveal>
   );
 }
@@ -252,19 +279,22 @@ export default async function PortfolioPage() {
       icon: Camera,
       value: String(projects.length),
       title: "Réalisations présentées",
-      text: "Une sélection d’interventions menées dans différents environnements.",
+      text:
+        "Une sélection d’interventions menées dans différents environnements.",
     },
     {
       icon: Waves,
       value: String(numberOfCategories),
       title: "Domaines techniques",
-      text: "Inspection, maintenance, soudure, hydraulique, offshore et portuaire.",
+      text:
+        "Inspection, maintenance, soudure, hydraulique, offshore et portuaire.",
     },
     {
       icon: ShieldCheck,
       value: "Terrain",
       title: "Expertise opérationnelle",
-      text: "Des interventions préparées selon les contraintes de chaque site.",
+      text:
+        "Des interventions préparées selon les contraintes de chaque site.",
     },
   ];
 
@@ -444,9 +474,13 @@ export default async function PortfolioPage() {
                         {item.value}
                       </strong>
 
-                      <h3>{item.title}</h3>
+                      <h3>
+                        {item.title}
+                      </h3>
 
-                      <p>{item.text}</p>
+                      <p>
+                        {item.text}
+                      </p>
                     </div>
                   </article>
                 </Reveal>
@@ -594,21 +628,38 @@ export default async function PortfolioPage() {
               />
             </Link>
 
-            <a
-              href="tel:+213660952397"
-              className="portfolio-final-cta-phone"
-              aria-label="Appeler Farre Service au 0660 952 397"
-            >
-              <span>Contact direct</span>
+            <div className="portfolio-final-cta-phones">
+              <a
+                href="tel:+213660952397"
+                className="portfolio-final-cta-phone"
+                aria-label="Appeler Farre Service au 0660 95 23 97"
+              >
+                <span>
+                  Contact direct 1
+                </span>
 
-              <strong>
-                0660 952 397
-              </strong>
-            </a>
+                <strong>
+                  0660 95 23 97
+                </strong>
+              </a>
+
+              <a
+                href="tel:+213697117917"
+                className="portfolio-final-cta-phone"
+                aria-label="Appeler Farre Service au 0697 11 79 17"
+              >
+                <span>
+                  Contact direct 2
+                </span>
+
+                <strong>
+                  0697 11 79 17
+                </strong>
+              </a>
+            </div>
           </Reveal>
         </div>
       </section>
     </>
   );
 }
-
